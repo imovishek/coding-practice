@@ -1,0 +1,64 @@
+11498          			ac
+11219          			ac
+12577	       			ac
+11936				ac
+10370				ac
+10696				ac
+113	power of cryptography	not solved thinking
+11185 ternary			ac
+371 ackermann functions		ac
+10235 simple Emirp		ac
+11689 - Soda Surpler            ac
+11764 - Jumping Mario		ac
+11805 - Bafana Bafana		ac
+10945 - Mother bear		ac
+12578 - 10:6:2			ac
+11777 - Automate the Grades	ac
+11854 - Egypt			ac
+11875 - Brick Game		ac
+12403 - Save Setu		ac
+11805 - Bafana Bafana           ac
+591 - Box of Bricks		ac
+11530 - SMS Typing         	ac
+10346 - Peter's Smokes		ac
+11877 - The Coco-Cola Store	ac
+11150 - Cola			ac
+11942 - Lumberjack Sequencin	ac
+382 - Perfection		ac
+136 - Ugly Numbers		ac
+10924 - Prime Words		ac
+12478 - Hardest Problem Ever 	ac
+11332 - Summing Digits		ac
+11417 - GCD			thinking...& ac
+11984 - A Change in Thermal 	ac
+10921 - find the telephone	ac
+10970 - big chocolate		ac
+10929 - you can say 11		ac
+11547 - Automatic Answer	ac
+10931 - PArity			ac
+12468 - Zapping			ac
+10260 - Soundex			ac
+10469 - To carry of not to Carry ac
+11455 - Behold my quadrangle	ac
+11900 - Boiled Eggs		ac
+10821 - Beat the Spread!
+483 - Word Scramble		ac
+12250 - Language Detection	ac
+10550 - combination Lock	ac
+10773 - Back to Inter mediate Math ac
+12502 - Three Families		ac
+12015 - Google is Feeling Lucky ac
+11650 - Mirror Clock		ac
+10340 - all in All		ac
+11677 - Alarm Clock		ac
+11608 - No Problem		ac
+11723 - Numbering roads.	ac
+
+
+
+
+
+
+
+
+
