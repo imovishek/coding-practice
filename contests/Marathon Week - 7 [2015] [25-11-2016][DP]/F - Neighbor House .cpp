@@ -28,39 +28,48 @@ OVISHEK PAUL, CSE - 15, SUST
 #define FOR(i,x)        for(int i=0;i<(x); i++)
 #define FOR1(i,x)       for(int i=1;i<=(x); i++)
 #define mx              100007
-#define seti(a, x)      (a|=(1<<x))
-#define check(a, x)     (a & (1<<x))
+
 using namespace std;
 typedef long long int lint;
 typedef double dbl;
 
+int dp[22][4];
+int ara[22][3], n;
+int rec(int pos, int sig)
+{
+    if(pos==n) return 0;
+    int &ret = dp[pos][sig];
+    if(ret!=-1) return ret;
+    ret = inf;
+    int a = (sig+1) % 3, b = (sig+2) % 3;
+    ret = min(ret, ara[pos][a] + rec(pos+1, a));
+    ret = min(ret, ara[pos][b] + rec(pos+1, b));
+    if(sig==3) ret = min(ret, ara[pos][0] + rec(pos+1, 0));
+    return ret;
+}
+
 int main()
 {
-//    freopen("input.txt", "r", stdin);
-////    freopen("output.txt", "w", stdout);
+#ifdef OVI
+        // freopen("input.txt", "r", stdin);
+        // freopen("output.txt", "w", stdout);
+#endif // OVI
+
     int t, tst = 1;
-    int n, m;
-    while(sf2(n, m)==2)
+    sf1(t);
+    while(t--)
     {
-        if(n==0 && m==0) return 0;
-        int ara[n+1];
-        mem(ara, 0);
-        FOR(i, m)
+        sf1(n);
+        FOR(i, n)
         {
-            int u, v;
-            sf2(u, v);
-            if(v<0){
-                v = -v;
-                ara[v] = 1;
-            }
+            sf3(ara[i][0], ara[i][1], ara[i][2]);
         }
-        int sum = 0;
-        FOR1(i, n) sum += !ara[i];
-        pf1(sum);
+        mem(dp, -1);
+        pcase(tst++);
+        pf1(rec(0, 3));
     }
     return 0;
 }
-
 
 
 

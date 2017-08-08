@@ -28,35 +28,60 @@ OVISHEK PAUL, CSE - 15, SUST
 #define FOR(i,x)        for(int i=0;i<(x); i++)
 #define FOR1(i,x)       for(int i=1;i<=(x); i++)
 #define mx              100007
-#define seti(a, x)      (a|=(1<<x))
-#define check(a, x)     (a & (1<<x))
+
 using namespace std;
 typedef long long int lint;
 typedef double dbl;
+struct data{
+    int u, v, w;
+    bool operator<(data a) const{
+        return u<a.u;
+    }
+}ara[100];
+int n;
+int flag[29];
+int rec(int pos, int cost, int cp)
+{
+
+    if(pos==n) return cost;
+    int u = ara[pos].u;
+    int now[9], x = 0;
+    FOR(i, u+1){
+        now[i] = flag[i];
+        cp+=flag[i];
+        flag[i] = 0;
+    }
+    now[ara[pos].v] = flag[ara[pos].v];
+    int ret = rec(pos+1, cost, cp);
+    if(ara[pos].w<=cp){
+        flag[ara[pos].v] += ara[pos].w;
+        int c = (ara[pos].v - ara[pos].u) * ara[pos].w;
+        ret = max(ret, rec(pos+1, cost+c, cp-ara[pos].w));
+    }
+     FOR(i, u+1){
+        flag[i] = now[i];
+    }
+    flag[ara[pos].v] = now[ara[pos].v];
+    return ret;
+}
 
 int main()
 {
-//    freopen("input.txt", "r", stdin);
-////    freopen("output.txt", "w", stdout);
+#ifdef OVI
+        // freopen("input.txt", "r", stdin);
+        // freopen("output.txt", "w", stdout);
+#endif // OVI
+
     int t, tst = 1;
-    int n, m;
-    while(sf2(n, m)==2)
-    {
-        if(n==0 && m==0) return 0;
-        int ara[n+1];
-        mem(ara, 0);
-        FOR(i, m)
-        {
-            int u, v;
-            sf2(u, v);
-            if(v<0){
-                v = -v;
-                ara[v] = 1;
-            }
-        }
-        int sum = 0;
-        FOR1(i, n) sum += !ara[i];
-        pf1(sum);
+    int cp, b;
+    while(sf3(cp, b, n)){
+        if(cp==b && b==n && !b) return 0;
+        FOR(i, n)
+            sf3(ara[i].u, ara[i].v, ara[i].w);
+        sort(ara, ara+n);
+        int ans = rec(0, 0, cp);
+        pf1(ans);
+
     }
     return 0;
 }

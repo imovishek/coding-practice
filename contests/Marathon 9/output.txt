@@ -28,49 +28,59 @@ OVISHEK PAUL, CSE - 15, SUST
 #define FOR(i,x)        for(int i=0;i<(x); i++)
 #define FOR1(i,x)       for(int i=1;i<=(x); i++)
 #define mx              100007
-#define seti(a, x)      (a|=(1<<x))
-#define check(a, x)     (a & (1<<x))
+
 using namespace std;
 typedef long long int lint;
 typedef double dbl;
 
+
 int main()
 {
-//    freopen("input.txt", "r", stdin);
-////    freopen("output.txt", "w", stdout);
+    freopen("input.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
     int t, tst = 1;
-    int n, m;
-    while(sf2(n, m)==2)
+    int n;
+    sf1(n);
+    int ara2[n];
+    int ara[n];
+    FOR(i, n) sf1(ara2[i]);
+    sort(ara2, ara2+n);
+    int cnt[n];
+    int pos = 0, p2 = 0;
+    cnt[0] = 1;
+    ara[0] = ara2[0];
+    FOR1(i, n-1)
     {
-        if(n==0 && m==0) return 0;
-        int ara[n+1];
-        mem(ara, 0);
-        FOR(i, m)
-        {
-            int u, v;
-            sf2(u, v);
-            if(v<0){
-                v = -v;
-                ara[v] = 1;
-            }
+        if(ara2[i-1]==ara2[i]) cnt[pos]++;
+        else{
+            pos++;
+            cnt[pos] = 1;
+            ara[pos] = ara2[i];
         }
-        int sum = 0;
-        FOR1(i, n) sum += !ara[i];
-        pf1(sum);
     }
+    pos++;
+//    FOR(i, pos) pf("%d %d**\n", ara[i], cnt[i]);
+//    pf("*\n");
+    int suma = 0, a = 0, sum = 0, b = 0;
+    int mini = inf;
+    for(int i = -1; i<pos; i++)
+    {
+//        pf("suma = %d\n", sum);
+    	sum = 0;
+        for(int j = pos; j>i; j--)
+        {
+//        	pf("sum = %d*\n", sum);
+            if(ara[i+1]*2>=ara[j-1]) {
+//                    pf("%d %d*\n", i, j);
+                    mini = min(mini, sum+suma);
+            }
+            if(j>0)sum+=cnt[j-1];
+        }
+        if(i<pos-1)suma+=cnt[i+1];
+    }
+
+
+
+    pf("%d\n", mini);
     return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

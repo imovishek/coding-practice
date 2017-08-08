@@ -27,36 +27,67 @@ OVISHEK PAUL, CSE - 15, SUST
 #define mem(arr,x)      memset((arr), (x), sizeof((arr)));
 #define FOR(i,x)        for(int i=0;i<(x); i++)
 #define FOR1(i,x)       for(int i=1;i<=(x); i++)
-#define mx              100007
-#define seti(a, x)      (a|=(1<<x))
-#define check(a, x)     (a & (1<<x))
+#define mx              500050
+
 using namespace std;
 typedef long long int lint;
 typedef double dbl;
 
+lint prime[41541+7];
+bool mark[mx];
+void sieve()
+{
+    for(int i = 3; i*i<=mx; i+=2)
+        if(!mark[i])
+            for(int j = i*i; j<mx ; j+=i+i)
+                mark[j] = 1;
+    prime[0] = 2;
+    int pos = 1;
+    for(int i = 3; i<mx ; i+=2)
+        if(!mark[i]) prime[pos++] = i;
+//    pf1(pos);
+//    pf1(prime[pos-1]);
+}
+lint power(lint n, int p)
+{
+    if(p==0) return 1;
+    if(p&1) return n * power(n, p-1);
+    lint mo = power(n, p/2);
+    return mo*mo;
+}
+
 int main()
 {
-//    freopen("input.txt", "r", stdin);
-////    freopen("output.txt", "w", stdout);
+#ifdef OVI
+        // freopen("input.txt", "r", stdin);
+        // freopen("output.txt", "w", stdout);
+#endif // OVI
+
     int t, tst = 1;
-    int n, m;
-    while(sf2(n, m)==2)
+    sieve();
+    sf1(t);
+    while(t--)
     {
-        if(n==0 && m==0) return 0;
-        int ara[n+1];
-        mem(ara, 0);
-        FOR(i, m)
+        lint n;
+        lint ans = 1;
+        sf("%lld", &n);
+        lint tmp = n;
+        for(int i = 0; prime[i]*prime[i]<=n ; i++)
         {
-            int u, v;
-            sf2(u, v);
-            if(v<0){
-                v = -v;
-                ara[v] = 1;
+            int cnt = 0;
+            while(n%prime[i]==0) {
+                    cnt++;
+                    n/=prime[i];
+            }
+            if(cnt){
+                ans*=(power(prime[i], cnt+1) - 1)/(prime[i]-1);
             }
         }
-        int sum = 0;
-        FOR1(i, n) sum += !ara[i];
-        pf1(sum);
+        if(n>1){
+            ans*=(power(n, 2)-1)/(n-1);
+        }
+
+        pf("%lld\n", ans-tmp);
     }
     return 0;
 }

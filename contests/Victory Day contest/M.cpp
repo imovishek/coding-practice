@@ -28,36 +28,46 @@ OVISHEK PAUL, CSE - 15, SUST
 #define FOR(i,x)        for(int i=0;i<(x); i++)
 #define FOR1(i,x)       for(int i=1;i<=(x); i++)
 #define mx              100007
-#define seti(a, x)      (a|=(1<<x))
-#define check(a, x)     (a & (1<<x))
+
 using namespace std;
 typedef long long int lint;
 typedef double dbl;
 
+
+char grid[1007][1007];
 int main()
 {
-//    freopen("input.txt", "r", stdin);
-////    freopen("output.txt", "w", stdout);
+#ifdef OVI
+        // freopen("input.txt", "r", stdin);
+        // freopen("output.txt", "w", stdout);
+#endif // OVI
+
     int t, tst = 1;
     int n, m;
-    while(sf2(n, m)==2)
+    sf2(n, m);
+    int f = 0, ans = 0, sum = 0;
+    FOR(i, n)
     {
-        if(n==0 && m==0) return 0;
-        int ara[n+1];
-        mem(ara, 0);
-        FOR(i, m)
-        {
-            int u, v;
-            sf2(u, v);
-            if(v<0){
-                v = -v;
-                ara[v] = 1;
-            }
+        sf("%s", grid[i]);
+        if(i&1){
+            for(int k = m-1; k>=0; k--)
+                if(grid[i][k]=='.') sum++;
+                else if(grid[i][k]=='L') {
+                    ans = max(ans, sum);
+                    sum = 0;
+                }
         }
-        int sum = 0;
-        FOR1(i, n) sum += !ara[i];
-        pf1(sum);
+        else{
+            for(int k = 0; k<m; k++)
+                if(grid[i][k]=='.') sum++;
+                else if(grid[i][k]=='L') {
+                    ans = max(ans, sum);
+                    sum = 0;
+                }
+        }
     }
+    ans = max(ans, sum);
+    pf1(ans);
     return 0;
 }
 

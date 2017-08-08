@@ -28,35 +28,55 @@ OVISHEK PAUL, CSE - 15, SUST
 #define FOR(i,x)        for(int i=0;i<(x); i++)
 #define FOR1(i,x)       for(int i=1;i<=(x); i++)
 #define mx              100007
-#define seti(a, x)      (a|=(1<<x))
-#define check(a, x)     (a & (1<<x))
+
 using namespace std;
 typedef long long int lint;
 typedef double dbl;
 
+int n, m;
+
+bool isvali(int x, int y)
+{
+    return x>-1 && y>-1 && x<n && y<m;
+}
+char grid[30][30];
+int fx[] = {1,-1,0,0};
+int fy[] = {0,0,1,-1};
+int cnt = 0;
+int dfs(int x, int y)
+{
+    if(!isvali(x, y) || grid[x][y]=='#') return 0;
+    grid[x][y] = '#';
+    cnt++;
+    FOR(i, 4)
+        dfs(x+fx[i], y+fy[i]);
+}
 int main()
 {
-//    freopen("input.txt", "r", stdin);
-////    freopen("output.txt", "w", stdout);
     int t, tst = 1;
-    int n, m;
-    while(sf2(n, m)==2)
+    sf1(t);
+    while(t--)
     {
-        if(n==0 && m==0) return 0;
-        int ara[n+1];
-        mem(ara, 0);
-        FOR(i, m)
+        sf2(m,n);
+        getchar();
+        FOR(i, n)
+            gets(grid[i]);
+        FOR(i, n)
         {
-            int u, v;
-            sf2(u, v);
-            if(v<0){
-                v = -v;
-                ara[v] = 1;
+            int f = 0;
+            FOR(j, m)
+            {
+                if(grid[i][j]=='@') {
+                    cnt = 0;
+                    f = 1;
+                    dfs(i, j);
+                    break;
+                }
             }
+            if(f) break;
         }
-        int sum = 0;
-        FOR1(i, n) sum += !ara[i];
-        pf1(sum);
+        pcase(tst++);
+        pf1(cnt);
     }
     return 0;
 }

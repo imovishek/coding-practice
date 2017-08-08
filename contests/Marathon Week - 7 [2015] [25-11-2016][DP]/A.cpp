@@ -28,35 +28,52 @@ OVISHEK PAUL, CSE - 15, SUST
 #define FOR(i,x)        for(int i=0;i<(x); i++)
 #define FOR1(i,x)       for(int i=1;i<=(x); i++)
 #define mx              100007
-#define seti(a, x)      (a|=(1<<x))
-#define check(a, x)     (a & (1<<x))
+
 using namespace std;
 typedef long long int lint;
 typedef double dbl;
 
+char ara[10000007];
+int mini = inf;
+int n;
+int rec(int pos, int sum)
+{
+    for(int i = pos; i<n ; i++){
+        sum*=10;
+        if(ara[i]=='A'){
+            FOR(j, 10){
+                int x = rec(i+1, (sum+j)%10);
+                if(x==0 && mini==inf) {mini = j; break;}
+            }
+            break;
+        }
+        sum = (sum + ara[i] - '0') % 8;
+    }
+    return sum;
+}
 int main()
 {
-//    freopen("input.txt", "r", stdin);
-////    freopen("output.txt", "w", stdout);
+#ifdef OVI
+        // freopen("input.txt", "r", stdin);
+        // freopen("output.txt", "w", stdout);
+#endif // OVI
+
     int t, tst = 1;
-    int n, m;
-    while(sf2(n, m)==2)
+    sf1(t);
+    while(t--)
     {
-        if(n==0 && m==0) return 0;
-        int ara[n+1];
-        mem(ara, 0);
-        FOR(i, m)
-        {
-            int u, v;
-            sf2(u, v);
-            if(v<0){
-                v = -v;
-                ara[v] = 1;
-            }
-        }
+        sf("%s", ara);
+        n = strlen(ara);
+        mini = inf;
         int sum = 0;
-        FOR1(i, n) sum += !ara[i];
-        pf1(sum);
+        for(int i = n-3; i<n ; i++)
+            sum = (sum*10 + ara[i] - '0') % 8;
+        if(!sum){
+            pf("YES\n");
+            if(ara[0]=='A') pf1(1);
+            else pf1(0);
+        }
+        else pf("NO\n");
     }
     return 0;
 }

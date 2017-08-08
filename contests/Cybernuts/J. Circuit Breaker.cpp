@@ -28,39 +28,68 @@ OVISHEK PAUL, CSE - 15, SUST
 #define FOR(i,x)        for(int i=0;i<(x); i++)
 #define FOR1(i,x)       for(int i=1;i<=(x); i++)
 #define mx              100007
-#define seti(a, x)      (a|=(1<<x))
-#define check(a, x)     (a & (1<<x))
+
 using namespace std;
 typedef long long int lint;
 typedef double dbl;
 
+vector<int> edge[mx];
+int col[mx];
+int bigflag = 0;
+void dfs(int u, int tim, int p)
+{
+    col[u] = 1;
+    FOR(i, edge[u].size())
+    {
+        int v = edge[u][i];
+        if(!col[v]){
+            dfs(v, tim+1, u);
+            if(bigflag) return;
+        }
+        else if(v!=p)
+        {
+            if(tim==2) bigflag = 1;
+        }
+    }
+}
+
 int main()
 {
-//    freopen("input.txt", "r", stdin);
-////    freopen("output.txt", "w", stdout);
     int t, tst = 1;
-    int n, m;
-    while(sf2(n, m)==2)
+    sf1(t);
+    while(t--)
     {
-        if(n==0 && m==0) return 0;
-        int ara[n+1];
-        mem(ara, 0);
+        int n, m, x;
+        sf2(n, m);
         FOR(i, m)
         {
             int u, v;
             sf2(u, v);
-            if(v<0){
-                v = -v;
-                ara[v] = 1;
-            }
+            edge[u].pb(v);
+            edge[v].pb(u);
         }
-        int sum = 0;
-        FOR1(i, n) sum += !ara[i];
-        pf1(sum);
+        FOR(i, n)
+        {
+            bigflag = 0;
+            mem(col, 0);
+            dfs(i, 0, -1);
+            if(bigflag) break;
+        }
+        pcase(tst++);
+        if(n<3) pf("No\n");
+        else if(!bigflag){
+            if(m<=2*n-4) pf("No\n");
+            else pf("Yes\n");
+        }
+        else {
+            if(m<=3*n-6) pf("No\n");
+            else pf("Yes\n");
+        }
+        FOR(i, n) edge[i].clear();
+
     }
     return 0;
 }
-
 
 
 

@@ -28,35 +28,74 @@ OVISHEK PAUL, CSE - 15, SUST
 #define FOR(i,x)        for(int i=0;i<(x); i++)
 #define FOR1(i,x)       for(int i=1;i<=(x); i++)
 #define mx              100007
-#define seti(a, x)      (a|=(1<<x))
-#define check(a, x)     (a & (1<<x))
+
 using namespace std;
 typedef long long int lint;
 typedef double dbl;
-
+int par[5000];
+int id(int u)
+{
+    if(par[u]!=u) par[u] = id(par[u]);
+    return par[u];
+}
+struct data{
+    int u, v, w;
+    bool operator<(const data &a) const{
+        return w<a.w;
+    }
+}edge[100000];
+int pos;
+int kruskal()
+{
+    sort(edge, edge+pos);
+    int ans = 0;
+    FOR(i, pos)
+    {
+        int x = id(edge[i].u), y = id(edge[i].v), w = edge[i].w;
+        if(x!=y) {
+                par[x] = y;
+                ans+=w;
+        }
+    }
+    return ans;
+}
 int main()
 {
-//    freopen("input.txt", "r", stdin);
-////    freopen("output.txt", "w", stdout);
+#ifdef OVI
+        // freopen("input.txt", "r", stdin);
+        // freopen("output.txt", "w", stdout);
+#endif // OVI
+
     int t, tst = 1;
-    int n, m;
-    while(sf2(n, m)==2)
+    sf1(t);
+    while(t--)
     {
-        if(n==0 && m==0) return 0;
-        int ara[n+1];
-        mem(ara, 0);
-        FOR(i, m)
+        int n;
+        sf1(n);
+        pos = 0;
+        int ans = 0;
+        FOR(i, n)
         {
-            int u, v;
-            sf2(u, v);
-            if(v<0){
-                v = -v;
-                ara[v] = 1;
+            FOR(j, n)
+            {
+                int a;
+                sf1(a);
+                if(a>0){
+                    edge[pos].u = i;
+                    edge[pos].v = j;
+                    edge[pos++].w = a;
+                }
+                ans+=a;
             }
         }
-        int sum = 0;
-        FOR1(i, n) sum += !ara[i];
-        pf1(sum);
+        FOR(i, n+1) par[i] = i;
+        pcase(tst++);
+        int kru = kruskal();
+        set<int> st;
+        FOR(i, n) st.insert(id(i));
+        if(st.size()>1) pf1(-1);
+        else pf1(ans-kru);
+
     }
     return 0;
 }

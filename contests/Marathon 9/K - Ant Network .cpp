@@ -28,36 +28,45 @@ OVISHEK PAUL, CSE - 15, SUST
 #define FOR(i,x)        for(int i=0;i<(x); i++)
 #define FOR1(i,x)       for(int i=1;i<=(x); i++)
 #define mx              100007
-#define seti(a, x)      (a|=(1<<x))
-#define check(a, x)     (a & (1<<x))
+
 using namespace std;
 typedef long long int lint;
 typedef double dbl;
 
+vector<int> edge[mx];
+int low[mx], disc[mx], vis[mx];
+stack< pii > st;
+int cnt = 0, ans = 1, timer;
+void clear(int n)
+{
+    cnt = 0, ans = 1, timer = 0;
+    mem(vis, 0);
+    FOR(i, n) edge[i].clear();
+}
+
+int bcc(int u, int p)
+{
+    vis[u] = 1;
+    low[u] = disc[u] = timer++;
+    FOR(i, edge[u].size())
+    {
+        int v = edge[u][i];
+        st.push(pii(u, v));
+        if(!vis[v]){
+
+        }
+    }
+}
+
 int main()
 {
-//    freopen("input.txt", "r", stdin);
-////    freopen("output.txt", "w", stdout);
+#ifdef OVI
+        // freopen("input.txt", "r", stdin);
+        // freopen("output.txt", "w", stdout);
+#endif // OVI
+
     int t, tst = 1;
-    int n, m;
-    while(sf2(n, m)==2)
-    {
-        if(n==0 && m==0) return 0;
-        int ara[n+1];
-        mem(ara, 0);
-        FOR(i, m)
-        {
-            int u, v;
-            sf2(u, v);
-            if(v<0){
-                v = -v;
-                ara[v] = 1;
-            }
-        }
-        int sum = 0;
-        FOR1(i, n) sum += !ara[i];
-        pf1(sum);
-    }
+
     return 0;
 }
 

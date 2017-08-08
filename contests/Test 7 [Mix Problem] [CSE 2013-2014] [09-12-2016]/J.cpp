@@ -20,7 +20,7 @@ OVISHEK PAUL, CSE - 15, SUST
 #define sf1ll(a)        scanf("%lld",&a)
 #define sf2ll(a,b)      scanf("%lld %lld",&a,&b)
 #define sf3ll(a,b,c)    scanf("%lld %lld %lld",&a,&b,&c)
-#define pcase(x)        printf("Case %d: ",x)
+#define pcase(x)        printf("Case %d:\n",x)
 #define MOD             1000000007
 #define inf             1000000007
 #define pi              acos(-1.0)
@@ -28,35 +28,53 @@ OVISHEK PAUL, CSE - 15, SUST
 #define FOR(i,x)        for(int i=0;i<(x); i++)
 #define FOR1(i,x)       for(int i=1;i<=(x); i++)
 #define mx              100007
-#define seti(a, x)      (a|=(1<<x))
-#define check(a, x)     (a & (1<<x))
+
 using namespace std;
 typedef long long int lint;
 typedef double dbl;
 
+int ara[mx], tree[3*mx];
+int init(int node, int b, int e)
+{
+    if(b==e) {
+            return tree[node]=ara[b];
+    }
+    int mid = (b+e)/2, left = node*2;
+    tree[node] = min(init(left+1, mid+1, e), init(left, b, mid));
+//    pf("%d %d %d*\n", b, e, tree[node]);
+    return tree[node];
+}
+
+int query(int node, int b, int e, int i, int j)
+{
+    if(b>=i && e<=j) return tree[node];
+    if(e<i || b>j) return inf;
+    int mid = (b+e)/2, left = node*2;
+    int x;
+    x = min(query(left+1, mid+1, e, i, j), query(left, b, mid, i, j));
+    return x;
+}
 int main()
 {
-//    freopen("input.txt", "r", stdin);
-////    freopen("output.txt", "w", stdout);
+#ifdef OVI
+        // freopen("input.txt", "r", stdin);
+        // freopen("output.txt", "w", stdout);
+#endif // OVI
+
     int t, tst = 1;
-    int n, m;
-    while(sf2(n, m)==2)
+    sf1(t);
+    while(t--)
     {
-        if(n==0 && m==0) return 0;
-        int ara[n+1];
-        mem(ara, 0);
-        FOR(i, m)
-        {
+        int n, m;
+        sf2(n, m);
+        FOR1(i, n) sf1(ara[i]);
+        init(1, 1, n);
+        pcase(tst++);
+        FOR(i, m){
             int u, v;
             sf2(u, v);
-            if(v<0){
-                v = -v;
-                ara[v] = 1;
-            }
+            pf1(query(1, 1, n, u, v));
         }
-        int sum = 0;
-        FOR1(i, n) sum += !ara[i];
-        pf1(sum);
     }
     return 0;
 }

@@ -22,41 +22,57 @@ OVISHEK PAUL, CSE - 15, SUST
 #define sf3ll(a,b,c)    scanf("%lld %lld %lld",&a,&b,&c)
 #define pcase(x)        printf("Case %d: ",x)
 #define MOD             1000000007
-#define inf             1000000007
+#define infd             1000000007
 #define pi              acos(-1.0)
 #define mem(arr,x)      memset((arr), (x), sizeof((arr)));
 #define FOR(i,x)        for(int i=0;i<(x); i++)
 #define FOR1(i,x)       for(int i=1;i<=(x); i++)
 #define mx              100007
-#define seti(a, x)      (a|=(1<<x))
-#define check(a, x)     (a & (1<<x))
+
 using namespace std;
 typedef long long int lint;
 typedef double dbl;
+lint inf = 100000000000000007;
+lint ara[307][307];
+lint dp[307][307];
+int n, m;
+lint rec(int r, int num)
+{
+    if(r==n) {
+        if(num==n) return 0;
+        return inf;
+    }
+    lint &ret = dp[r][num];
+
+    if(ret!=-1) return ret;
+    ret = rec(r+1, num);
+    lint sum = 0;
+    FOR(i, m)
+    {
+        sum+=ara[r][i];
+        ret = min(ret, sum + rec(r+1, num+i+1) + (i+1)*(i+1));
+    }
+    return ret;
+}
 
 int main()
 {
-//    freopen("input.txt", "r", stdin);
-////    freopen("output.txt", "w", stdout);
+#ifdef OVI
+         freopen("input.txt", "r", stdin);
+         freopen("output.txt", "w", stdout);
+#endif // OVI
+
     int t, tst = 1;
-    int n, m;
-    while(sf2(n, m)==2)
+    sf1(t);
+    while(t--)
     {
-        if(n==0 && m==0) return 0;
-        int ara[n+1];
-        mem(ara, 0);
-        FOR(i, m)
-        {
-            int u, v;
-            sf2(u, v);
-            if(v<0){
-                v = -v;
-                ara[v] = 1;
-            }
-        }
-        int sum = 0;
-        FOR1(i, n) sum += !ara[i];
-        pf1(sum);
+        sf2(n, m);
+        FOR(i, n)
+            FOR(j, m)
+                sf1(ara[i][j]);
+        FOR(i, n) sort(ara[i], ara[i]+m);
+        mem(dp, -1);
+        pf("Case #%d: %lld\n", tst++, rec(0, 0));
     }
     return 0;
 }

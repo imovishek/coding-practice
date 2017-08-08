@@ -21,43 +21,45 @@ OVISHEK PAUL, CSE - 15, SUST
 #define sf2ll(a,b)      scanf("%lld %lld",&a,&b)
 #define sf3ll(a,b,c)    scanf("%lld %lld %lld",&a,&b,&c)
 #define pcase(x)        printf("Case %d: ",x)
-#define MOD             1000000007
+#define MOD             1000000
 #define inf             1000000007
 #define pi              acos(-1.0)
 #define mem(arr,x)      memset((arr), (x), sizeof((arr)));
 #define FOR(i,x)        for(int i=0;i<(x); i++)
 #define FOR1(i,x)       for(int i=1;i<=(x); i++)
 #define mx              100007
-#define seti(a, x)      (a|=(1<<x))
-#define check(a, x)     (a & (1<<x))
+
 using namespace std;
 typedef long long int lint;
 typedef double dbl;
 
+
 int main()
 {
-//    freopen("input.txt", "r", stdin);
-////    freopen("output.txt", "w", stdout);
+#ifdef OVI
+        // freopen("input.txt", "r", stdin);
+        // freopen("output.txt", "w", stdout);
+#endif // OVI
+
     int t, tst = 1;
-    int n, m;
-    while(sf2(n, m)==2)
+    lint f[1007];
+    f[0] = 1;
+    for(int i = 1; i<=1000 ; i++)
     {
-        if(n==0 && m==0) return 0;
-        int ara[n+1];
-        mem(ara, 0);
-        FOR(i, m)
+        lint sum = 0;
+        for(int j = 0; j<i ; j++)
         {
-            int u, v;
-            sf2(u, v);
-            if(v<0){
-                v = -v;
-                ara[v] = 1;
-            }
+            sum = (sum + f[i-j-1]*f[j]) % MOD;
         }
-        int sum = 0;
-        FOR1(i, n) sum += !ara[i];
-        pf1(sum);
+        f[i] = sum;
+//        pf1(sum);
     }
+    int n;
+    while(sf1(n)==1 && n){
+        pf1(f[n]);
+
+    }
+
     return 0;
 }
 

@@ -27,36 +27,42 @@ OVISHEK PAUL, CSE - 15, SUST
 #define mem(arr,x)      memset((arr), (x), sizeof((arr)));
 #define FOR(i,x)        for(int i=0;i<(x); i++)
 #define FOR1(i,x)       for(int i=1;i<=(x); i++)
-#define mx              100007
-#define seti(a, x)      (a|=(1<<x))
-#define check(a, x)     (a & (1<<x))
-using namespace std;
-typedef long long int lint;
-typedef double dbl;
+#define mx              1000007
 
+using namespace std;
+typedef unsigned long long int lint;
+typedef double dbl;
+char a[mx], b[mx];
+lint p[mx], prm = 33;
 int main()
 {
-//    freopen("input.txt", "r", stdin);
-////    freopen("output.txt", "w", stdout);
+#ifdef OVI
+        // freopen("input.txt", "r", stdin);
+        // freopen("output.txt", "w", stdout);
+#endif // OVI
+    p[0] = 1;
+    FOR1(i, mx-1) p[i] = prm * p[i-1];
     int t, tst = 1;
-    int n, m;
-    while(sf2(n, m)==2)
-    {
-        if(n==0 && m==0) return 0;
-        int ara[n+1];
-        mem(ara, 0);
-        FOR(i, m)
+    sf1(t);
+    while(t--){
+        sf("%s%s", a, b);
+        lint hash_b = 0;
+        int n = strlen(a);
+        int m = strlen(b);
+        for(int i = 0; i<m ; i++) hash_b = hash_b*prm + b[i] - '0';
+        lint hash_a = 0;
+        for(int i = 0; i<m && i<n; i++)
+            hash_a = hash_a * prm + a[i] - '0';
+        int cnt = 0;
+        if(hash_a==hash_b) cnt = 1;
+        for(int i = 0, j = m; j<n; j++, i++)
         {
-            int u, v;
-            sf2(u, v);
-            if(v<0){
-                v = -v;
-                ara[v] = 1;
-            }
+            hash_a -= (p[m-1] * (a[i]-'0'));
+            hash_a = hash_a * prm + a[j] - '0';
+            if(hash_a==hash_b) cnt++;
         }
-        int sum = 0;
-        FOR1(i, n) sum += !ara[i];
-        pf1(sum);
+        pcase(tst++);
+        pf1(cnt);
     }
     return 0;
 }

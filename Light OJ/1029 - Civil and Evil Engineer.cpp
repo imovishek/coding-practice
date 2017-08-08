@@ -28,41 +28,92 @@ OVISHEK PAUL, CSE - 15, SUST
 #define FOR(i,x)        for(int i=0;i<(x); i++)
 #define FOR1(i,x)       for(int i=1;i<=(x); i++)
 #define mx              100007
-#define seti(a, x)      (a|=(1<<x))
-#define check(a, x)     (a & (1<<x))
+
 using namespace std;
 typedef long long int lint;
 typedef double dbl;
 
+int par[107];
+int id(int n)
+{
+    if(par[n]!=n) par[n] = id(par[n]);
+    return par[n];
+}
+struct data{
+    int u, v, w;
+    bool operator<(const data &a) const{
+        return w<a.w;
+    }
+} edge[100007];
+int pos;
+int kruskal(){
+    int ans = 0;
+    FOR(i, pos){
+        int x = id(edge[i].u), y = id(edge[i].v);
+        if(x!=y){
+            par[x] = y;
+            ans+=edge[i].w;
+        }
+    }
+    return ans;
+}
+bool comp(data a, data b)
+{
+    return !(a<b);
+}
+
 int main()
 {
-//    freopen("input.txt", "r", stdin);
-////    freopen("output.txt", "w", stdout);
     int t, tst = 1;
-    int n, m;
-    while(sf2(n, m)==2)
+    sf1(t);
+    while(t--)
     {
-        if(n==0 && m==0) return 0;
-        int ara[n+1];
-        mem(ara, 0);
-        FOR(i, m)
-        {
-            int u, v;
-            sf2(u, v);
-            if(v<0){
-                v = -v;
-                ara[v] = 1;
-            }
+        int n;
+        sf1(n);
+        getchar();
+        string line;
+        pos = 0;
+        while(1){
+            cin >> edge[pos].u;
+            cin >> edge[pos].v;
+            cin >> edge[pos].w;
+            if(!edge[pos].u && !edge[pos].v && !edge[pos].w) break;
+            pos++;
         }
-        int sum = 0;
-        FOR1(i, n) sum += !ara[i];
-        pf1(sum);
+        FOR(i, n+1) par[i] = i;
+        sort(edge, edge+pos);
+        int ans = kruskal() ;
+        FOR(i, n+1) par[i] = i;
+        sort(edge, edge+pos, comp);
+        ans+=kruskal();
+        pcase(tst++);
+        if(ans&1) pf("%d/%d\n", ans, 2);
+        else pf1(ans/2);
     }
     return 0;
 }
 
 
+/*
+3
 
+1
+0 1 10
+0 1 20
+0 0 0
+
+3
+0 1 99
+0 2 10
+1 2 30
+2 3 30
+0 0 0
+
+2
+0 1 10
+0 2 5
+0 0 0
+*/
 
 
 

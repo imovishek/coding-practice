@@ -28,36 +28,32 @@ OVISHEK PAUL, CSE - 15, SUST
 #define FOR(i,x)        for(int i=0;i<(x); i++)
 #define FOR1(i,x)       for(int i=1;i<=(x); i++)
 #define mx              100007
-#define seti(a, x)      (a|=(1<<x))
-#define check(a, x)     (a & (1<<x))
+
 using namespace std;
 typedef long long int lint;
 typedef double dbl;
+int tree[mx*4], lazy[mx*4];
+int ara[mx];
+int init(int node, int b, int e)
+{
+    if(b==e){
+        return tree[node] = ara[b];
+    }
+    int lson = node*2, rson = lson+ 1, mid = (b+e)/2;
+    init(lson, b, mid);
+    init(rson, mid+1, e);
+    return tree[node] = tree[lson] + tree[rson];
+}
 
 int main()
 {
-//    freopen("input.txt", "r", stdin);
-////    freopen("output.txt", "w", stdout);
+#ifdef OVI
+        // freopen("input.txt", "r", stdin);
+        // freopen("output.txt", "w", stdout);
+#endif // OVI
+
     int t, tst = 1;
-    int n, m;
-    while(sf2(n, m)==2)
-    {
-        if(n==0 && m==0) return 0;
-        int ara[n+1];
-        mem(ara, 0);
-        FOR(i, m)
-        {
-            int u, v;
-            sf2(u, v);
-            if(v<0){
-                v = -v;
-                ara[v] = 1;
-            }
-        }
-        int sum = 0;
-        FOR1(i, n) sum += !ara[i];
-        pf1(sum);
-    }
+
     return 0;
 }
 

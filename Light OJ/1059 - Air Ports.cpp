@@ -28,35 +28,72 @@ OVISHEK PAUL, CSE - 15, SUST
 #define FOR(i,x)        for(int i=0;i<(x); i++)
 #define FOR1(i,x)       for(int i=1;i<=(x); i++)
 #define mx              100007
-#define seti(a, x)      (a|=(1<<x))
-#define check(a, x)     (a & (1<<x))
+
 using namespace std;
 typedef long long int lint;
 typedef double dbl;
 
-int main()
+int par[100007];
+int id(int u)
 {
-//    freopen("input.txt", "r", stdin);
-////    freopen("output.txt", "w", stdout);
-    int t, tst = 1;
-    int n, m;
-    while(sf2(n, m)==2)
+    if(par[u]!=u) par[u] = id(par[u]);
+    return par[u];
+}
+struct data{
+    int u, v, w;
+    bool operator<(const data &a) const{
+        return w<a.w;
+    }
+} edge[100007];
+int n, m, a, ans, cp;
+int kruskal()
+{
+    sort(edge, edge+m);
+    int flag[n+1];
+    FOR(i, n+1) {
+        par[i] = i;
+        flag[i] = 0;
+    }
+    cp = n;
+    int comp= n;
+    int sum = 0;
+    FOR(i, m)
     {
-        if(n==0 && m==0) return 0;
-        int ara[n+1];
-        mem(ara, 0);
-        FOR(i, m)
-        {
-            int u, v;
-            sf2(u, v);
-            if(v<0){
-                v = -v;
-                ara[v] = 1;
+        data &now = edge[i];
+        int x = id(now.u), y = id(now.v);
+        if(x!=y){
+            comp--;
+            sum+=now.w;
+            par[x] = y;
+            if(ans>comp*a+sum){
+                cp = comp;
+                ans = comp*a+sum;
             }
         }
-        int sum = 0;
-        FOR1(i, n) sum += !ara[i];
-        pf1(sum);
+    }
+}
+
+int main()
+{
+#ifdef OVI
+        // freopen("input.txt", "r", stdin);
+        // freopen("output.txt", "w", stdout);
+#endif // OVI
+
+    int t, tst = 1;
+    sf1(t);
+    while(t--)
+    {
+        sf3(n, m, a);
+        ans = n*a;
+        FOR(i, m)
+        {
+            data &x = edge[i];
+            sf3(x.u, x.v, x.w);
+        }
+        kruskal();
+        pcase(tst++);
+        pf("%d %d\n", ans, cp);
     }
     return 0;
 }

@@ -28,40 +28,52 @@ OVISHEK PAUL, CSE - 15, SUST
 #define FOR(i,x)        for(int i=0;i<(x); i++)
 #define FOR1(i,x)       for(int i=1;i<=(x); i++)
 #define mx              100007
-#define seti(a, x)      (a|=(1<<x))
-#define check(a, x)     (a & (1<<x))
+
 using namespace std;
 typedef long long int lint;
 typedef double dbl;
 
-int main()
+int dp[100];
+int n;
+string st;
+int rec(int pos)
 {
-//    freopen("input.txt", "r", stdin);
-////    freopen("output.txt", "w", stdout);
-    int t, tst = 1;
-    int n, m;
-    while(sf2(n, m)==2)
-    {
-        if(n==0 && m==0) return 0;
-        int ara[n+1];
-        mem(ara, 0);
-        FOR(i, m)
-        {
-            int u, v;
-            sf2(u, v);
-            if(v<0){
-                v = -v;
-                ara[v] = 1;
-            }
+    int col = st[pos];
+    if(pos==n-1) return 0;
+    int &ret = dp[pos];
+    if(ret != -1) return ret;
+    ret = inf;
+    for(int i = pos+1; i<n ; i++)
+        if(st[i]==((col+1)%3)){
+            int x = rec(i);
+            if(x==inf) continue;
+            ret = min(ret, (i-pos)*(i-pos) + x);
         }
-        int sum = 0;
-        FOR1(i, n) sum += !ara[i];
-        pf1(sum);
-    }
-    return 0;
+    return ret;
 }
 
+class ColorfulRoad{
+public:
+    int getMin(string sti){
+        n = sti.length();
+        st = sti;
+        FOR(i, n){
+            if(sti[i]=='R') st[i] = 0;
+            else if(sti[i]=='G' ) st[i] = 1;
+            else st[i] = 2;
+        }
+        mem(dp, -1);
+        int ans = rec(0);
+        if(ans==inf) return -1;
+        else return ans;
+    }
+};
 
+int main(){
+    ColorfulRoad a;
+    cout << a.getMin("RBRGBGBGGBGRGGG") << endl;
+    return 0;
+}
 
 
 

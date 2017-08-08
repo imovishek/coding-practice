@@ -1,0 +1,112 @@
+/*
+OVISHEK PAUL, CSE - 15, SUST
+
+*/
+
+#include<bits/stdc++.h>
+#define pii             pair<int,int>
+#define mkp             make_pair
+#define fs              first
+#define sc              second
+#define pb              push_back
+#define ppb             pop_back()
+#define pf              printf
+#define pf1(a)          printf("%d\n",a)
+#define hi              printf("hi!\n");
+#define sf              scanf
+#define sf1(a)          scanf("%d",&a)
+#define sf2(a,b)        scanf("%d %d",&a,&b)
+#define sf3(a,b,c)      scanf("%d %d %d",&a,&b,&c)
+#define sf1ll(a)        scanf("%lld",&a)
+#define sf2ll(a,b)      scanf("%lld %lld",&a,&b)
+#define sf3ll(a,b,c)    scanf("%lld %lld %lld",&a,&b,&c)
+#define pcase(x)        printf("Case %d: ",x)
+#define MOD             1000000007
+#define inf             1000000007
+#define pi              acos(-1.0)
+#define mem(arr,x)      memset((arr), (x), sizeof((arr)));
+#define FOR(i,x)        for(int i=0;i<(x); i++)
+#define FOR1(i,x)       for(int i=1;i<=(x); i++)
+#define mx              100007
+
+using namespace std;
+typedef long long int lint;
+typedef double dbl;
+vector<int> edge[100];
+int dist[100];
+int bfs(int st)
+{
+    mem(dist, -1);
+    dist[st] = 0;
+    queue<int> Q;
+    Q.push(st);
+    int ans, u;
+    while(!Q.empty()){
+        u = Q.front();
+        Q.pop();
+//        pf("%d*\n", u);
+        ans = dist[u];
+        FOR(i, edge[u].size()){
+            int v = edge[u][i];
+            if(dist[v]==-1){
+                dist[v] = dist[u] + 1;
+                Q.push(v);
+            }
+        }
+    }
+    return ans;
+}
+
+int main()
+{
+    int t, tst = 1;
+    int n, m;
+    while(sf2(n, m)){
+        if(n==m && !m) return 0;
+        map<string, int> mp;
+        int pos = 0;
+
+        FOR(i, m)
+        {
+            string u, v;
+            cin >> u >> v;
+            int x, y;
+            auto it = mp.find(u), itt = mp.find(v);
+            if(it == mp.end()) x = mp[u] = pos++;
+            else x = it->sc;
+            if(itt == mp.end()) y = mp[v] = pos++;
+            else y = itt->sc;
+//            pf("%d %d*\n", x, y);
+            edge[x].pb(y);
+            edge[y].pb(x);
+        }
+        int ans = bfs(0);
+        int f = 0;
+        FOR(i, n) if(dist[i]==-1) {f = 1; break;}
+
+
+        pf("Network %d: ", tst++);
+        if(f) pf("DISCONNECTED\n");
+        else {
+                FOR1(i, n-1) ans = max(ans, bfs(i));
+                pf("%d\n", ans);
+        }
+        FOR(i, n) edge[i].clear();
+        puts("");
+    }
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

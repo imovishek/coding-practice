@@ -28,35 +28,65 @@ OVISHEK PAUL, CSE - 15, SUST
 #define FOR(i,x)        for(int i=0;i<(x); i++)
 #define FOR1(i,x)       for(int i=1;i<=(x); i++)
 #define mx              100007
-#define seti(a, x)      (a|=(1<<x))
-#define check(a, x)     (a & (1<<x))
+
 using namespace std;
 typedef long long int lint;
 typedef double dbl;
-
+char ara[100];
+int dp[51][6][6];
+int n, siga, sigb;
+int rec(int pos, int v, int c)
+{
+    if(v>=3 || c>=5) { sigb = 1; return 0;}
+    if(pos==n){
+        siga = 1;
+        return 1;
+    }
+    int &ret = dp[pos][v][c];
+    if(ret!=-1) return ret;
+    ret = 0;
+    if(ara[pos]==1) ret |= rec(pos+1, v+1, 0);
+    else if(ara[pos]==0) ret |= rec(pos+1, 0, c+1);
+    else{
+        ret |= rec(pos+1, v+1, 0);
+        if(siga&sigb) return 1;
+        ret |= rec(pos+1, 0, c+1);
+    }
+    if(siga&sigb) return 1;
+}
+bool isvowel(char ch)
+{
+    return ch == 'A' || ch == 'E' || ch == 'I' || ch == 'O' || ch == 'U' ;
+}
 int main()
 {
-//    freopen("input.txt", "r", stdin);
-////    freopen("output.txt", "w", stdout);
+#ifdef OVI
+        // freopen("input.txt", "r", stdin);
+        // freopen("output.txt", "w", stdout);
+#endif // OVI
+
     int t, tst = 1;
-    int n, m;
-    while(sf2(n, m)==2)
+    sf1(t);
+    while(t--)
     {
-        if(n==0 && m==0) return 0;
-        int ara[n+1];
-        mem(ara, 0);
-        FOR(i, m)
-        {
-            int u, v;
-            sf2(u, v);
-            if(v<0){
-                v = -v;
-                ara[v] = 1;
-            }
+        sf("%s", ara);
+        n = strlen(ara);
+        FOR(i, n){
+            if(ara[i]=='?') ara[i] = 2;
+            else if(isvowel(ara[i])) ara[i] = 1;
+            else ara[i] = 0;
         }
-        int sum = 0;
-        FOR1(i, n) sum += !ara[i];
-        pf1(sum);
+        siga = sigb = 0;
+        mem(dp, -1);
+        rec(0, 0, 0);
+        pcase(tst++);
+        if(siga & sigb) pf("MIXED\n");
+        else if(siga) pf("GOOD\n");
+        else pf("BAD\n");
+
+
+
+
     }
     return 0;
 }

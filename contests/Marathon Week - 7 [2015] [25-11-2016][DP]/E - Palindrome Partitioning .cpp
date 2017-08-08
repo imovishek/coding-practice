@@ -28,35 +28,55 @@ OVISHEK PAUL, CSE - 15, SUST
 #define FOR(i,x)        for(int i=0;i<(x); i++)
 #define FOR1(i,x)       for(int i=1;i<=(x); i++)
 #define mx              100007
-#define seti(a, x)      (a|=(1<<x))
-#define check(a, x)     (a & (1<<x))
+
 using namespace std;
 typedef long long int lint;
 typedef double dbl;
+int dp[1007];
+char ara[1007];
+bool check[1007][1007];
+int n;
+
+int rec(int pos)
+{
+    if(pos==n) return 0;
+    int &ret = dp[pos];
+    if(ret!=-1) return ret;
+    ret = inf;
+    for(int i = pos; i<n ; i++)
+    {
+        if(check[pos][i]){
+            ret = min(ret, 1 + rec(i+1));
+        }
+    }
+    return ret;
+}
 
 int main()
 {
-//    freopen("input.txt", "r", stdin);
-////    freopen("output.txt", "w", stdout);
+#ifdef OVI
+//         freopen("input.txt", "r", stdin);
+//         freopen("output.txt", "w", stdout);
+#endif // OVI
+
     int t, tst = 1;
-    int n, m;
-    while(sf2(n, m)==2)
+    sf1(t);
+    while(t--)
     {
-        if(n==0 && m==0) return 0;
-        int ara[n+1];
-        mem(ara, 0);
-        FOR(i, m)
-        {
-            int u, v;
-            sf2(u, v);
-            if(v<0){
-                v = -v;
-                ara[v] = 1;
+        sf("%s",ara);
+        n = strlen(ara);
+        mem(check, 0);
+        FOR(i, n) check[i][i] = 1;
+        for(int L = 2; L<=n ; L++)
+            for(int i = 0; i<=n-L ; i++)
+            {
+                int j = i+L-1;
+                if(L==2) check[i][j] = (ara[i]==ara[j]);
+                else check[i][j] = ((ara[i]==ara[j]) && check[i+1][j-1]);
             }
-        }
-        int sum = 0;
-        FOR1(i, n) sum += !ara[i];
-        pf1(sum);
+        mem(dp, -1);
+        pcase(tst++);
+        pf1(rec(0));
     }
     return 0;
 }

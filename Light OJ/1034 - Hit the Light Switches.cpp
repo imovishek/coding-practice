@@ -28,35 +28,56 @@ OVISHEK PAUL, CSE - 15, SUST
 #define FOR(i,x)        for(int i=0;i<(x); i++)
 #define FOR1(i,x)       for(int i=1;i<=(x); i++)
 #define mx              100007
-#define seti(a, x)      (a|=(1<<x))
-#define check(a, x)     (a & (1<<x))
+
 using namespace std;
 typedef long long int lint;
 typedef double dbl;
 
+vector<int> edge[mx];
+stack<int> st;
+int vis[mx];
+int dfs(int u)
+{
+    vis[u] = 1;
+    for(int i = 0, v = 0; i<edge[u].size() && (1 || (v = edge[u][i])); i++)
+        if(!vis[v]) dfs(v);
+    st.push(u);
+}
+
 int main()
 {
-//    freopen("input.txt", "r", stdin);
-////    freopen("output.txt", "w", stdout);
+#ifdef OVI
+         freopen("input.txt", "r", stdin);
+         freopen("output.txt", "w", stdout);
+#endif // OVI
+
     int t, tst = 1;
-    int n, m;
-    while(sf2(n, m)==2)
+    sf1(t);
+    while(t--)
     {
-        if(n==0 && m==0) return 0;
-        int ara[n+1];
-        mem(ara, 0);
+        int n, m;
+        sf2(n, m);
         FOR(i, m)
         {
             int u, v;
             sf2(u, v);
-            if(v<0){
-                v = -v;
-                ara[v] = 1;
-            }
+            edge[u].pb(v);
         }
-        int sum = 0;
-        FOR1(i, n) sum += !ara[i];
-        pf1(sum);
+        mem(vis, 0);
+        FOR1(i, n) if(!vis[i]) dfs(i);
+        stack<int> topsort = st;
+        int cnt = 0;
+        mem(vis, 0);
+        while(!topsort.empty())
+        {
+            int v = topsort.top();
+            topsort.pop();
+            if(!vis[v]) dfs(v), cnt++;
+        }
+        while(!st.empty()) st.pop();
+        pcase(tst++);
+        pf1(cnt);
+        FOR1(i, n) edge[i].clear();
     }
     return 0;
 }

@@ -28,35 +28,64 @@ OVISHEK PAUL, CSE - 15, SUST
 #define FOR(i,x)        for(int i=0;i<(x); i++)
 #define FOR1(i,x)       for(int i=1;i<=(x); i++)
 #define mx              100007
-#define seti(a, x)      (a|=(1<<x))
-#define check(a, x)     (a & (1<<x))
+
 using namespace std;
 typedef long long int lint;
 typedef double dbl;
 
+int d;
+int M;
+struct mat{
+    int X[16][16];
+    mat(){mem(X, 0);}
+    mat mult(mat A, mat B);
+};
+
+mat mult(mat A, mat B){
+    mat ans;
+    FOR(i, d)
+        FOR(j, d)
+            FOR(k, d) ans.X[i][j] = (ans.X[i][j] + (A.X[i][k] * B.X[k][j]) % M) % M;
+    return ans;
+}
+
+mat power(mat A, int p)
+{
+
+    if(p==0)
+    {
+        mat ret;
+        FOR(i, d) ret.X[i][i] = 1;
+        return ret;
+    }
+    if(p&1) return mult(A, power(A, p-1));
+    mat mo = power(A, p/2);
+    return mult(mo, mo);
+}
+
 int main()
 {
-//    freopen("input.txt", "r", stdin);
-////    freopen("output.txt", "w", stdout);
+#ifdef OVI
+        // freopen("input.txt", "r", stdin);
+        // freopen("output.txt", "w", stdout);
+#endif // OVI
+
     int t, tst = 1;
-    int n, m;
-    while(sf2(n, m)==2)
+    int n;
+    while(sf3(d, n, M))
     {
-        if(n==0 && m==0) return 0;
-        int ara[n+1];
-        mem(ara, 0);
-        FOR(i, m)
-        {
-            int u, v;
-            sf2(u, v);
-            if(v<0){
-                v = -v;
-                ara[v] = 1;
-            }
-        }
-        int sum = 0;
-        FOR1(i, n) sum += !ara[i];
-        pf1(sum);
+        if(!d && !n && !M) return 0;
+        int f[d], a[d];
+        FOR(i, d) sf1(a[i]), a[i]%=M;
+        FOR(i, d) {sf1(f[i]); f[i]%=M;}
+        if(n<=d) {pf1(f[n-1]); continue;}
+        mat A;
+        FOR(i, d) A.X[0][i] = a[i];
+        FOR1(i, d-1) A.X[i][i-1] = 1;
+        A = power(A, n-d);
+        int ans = 0;
+        FOR(i, d) ans = (ans + (A.X[0][i]*f[d-i-1])% M) % M;
+        pf1(ans);
     }
     return 0;
 }

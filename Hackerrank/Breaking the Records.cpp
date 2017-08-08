@@ -10,6 +10,7 @@ OVISHEK PAUL, CSE - 15, SUST
 #define sc              second
 #define pb              push_back
 #define ppb             pop_back()
+#define all(vt)         vt.begin(), vt.end()
 #define pf              printf
 #define pf1(a)          printf("%d\n",a)
 #define hi              printf("hi!\n");
@@ -27,39 +28,39 @@ OVISHEK PAUL, CSE - 15, SUST
 #define mem(arr,x)      memset((arr), (x), sizeof((arr)));
 #define FOR(i,x)        for(int i=0;i<(x); i++)
 #define FOR1(i,x)       for(int i=1;i<=(x); i++)
+#define repr(vt, it)    for(typeof(vt.begin()) it = vt.begin(); it!=vt.end(); it++)
 #define mx              100007
-#define seti(a, x)      (a|=(1<<x))
-#define check(a, x)     (a & (1<<x))
+
 using namespace std;
 typedef long long int lint;
 typedef double dbl;
+typedef vector<int> vi;
+
 
 int main()
 {
-//    freopen("input.txt", "r", stdin);
-////    freopen("output.txt", "w", stdout);
+#ifdef OVI
+        // freopen("input.txt", "r", stdin);
+        // freopen("output.txt", "w", stdout);
+#endif // OVI
+
     int t, tst = 1;
-    int n, m;
-    while(sf2(n, m)==2)
+    int n;
+    sf1(n);
+    int a;
+    sf1(a);
+    int maxi = a, mini = a;
+    int cnta = 0, cntb = 0;
+    FOR(i, n-1)
     {
-        if(n==0 && m==0) return 0;
-        int ara[n+1];
-        mem(ara, 0);
-        FOR(i, m)
-        {
-            int u, v;
-            sf2(u, v);
-            if(v<0){
-                v = -v;
-                ara[v] = 1;
-            }
-        }
-        int sum = 0;
-        FOR1(i, n) sum += !ara[i];
-        pf1(sum);
+        sf1(a);
+        if(maxi<a) {cnta++; maxi = a;}
+        if(mini>a) {cntb++; mini = a;}
     }
+    cout << cnta << " " << cntb << endl;
     return 0;
 }
+
 
 
 

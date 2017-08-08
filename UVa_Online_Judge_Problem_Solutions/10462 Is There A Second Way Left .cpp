@@ -47,17 +47,17 @@ int find(int u)
 int vis[1007], bigflag = 0;
 int dfs(int u, int en, int p, int mini)
 {
-    if(vis[u]) return inf;
+    if(vis[u]) return 0;
 //    pf("%d**\n", u);
     vis[u] = 1;
-    if(u==en && p!=-1) {
+    if(u==en){
             return mini;
     }
-    int minimum = inf;
+    int minimum = 0;
     FOR(i, edge[u].size()){
-        minimum = min(minimum , dfs(edge[u][i].fs, en, u, min(mini, edge[u][i].sc)));
-        if(bigflag) return minimum;
+        minimum = max(minimum , dfs(edge[u][i].fs, en, u, max(mini, edge[u][i].sc)));
     }
+    return minimum;
 }
 int kruskal()
 {
@@ -98,7 +98,7 @@ int kruskal()
         if(flag[i]==-1){
             mem(vis, 0);
             bigflag = 0;
-            int x = dfs(ara[i].u, ara[i].v, -1, inf);
+            int x = dfs(ara[i].u, ara[i].v, -1, 0);
 //            pf("%d %d %d*******\n", ara[i].u, ara[i].v, x);
             mini = min(mini, ans-x+ara[i].w);
         }
@@ -109,8 +109,8 @@ int kruskal()
 }
 int main()
 {
-    freopen("input.txt", "r", stdin);
-    freopen("output.txt", "w", stdout);
+//    freopen("input.txt", "r", stdin);
+//    freopen("output.txt", "w", stdout);
     sf1(t);
     while(t--)
     {

@@ -28,36 +28,60 @@ OVISHEK PAUL, CSE - 15, SUST
 #define FOR(i,x)        for(int i=0;i<(x); i++)
 #define FOR1(i,x)       for(int i=1;i<=(x); i++)
 #define mx              100007
-#define seti(a, x)      (a|=(1<<x))
-#define check(a, x)     (a & (1<<x))
+
 using namespace std;
 typedef long long int lint;
 typedef double dbl;
 
+bool isvali(int x, int y)
+{
+    return x>-1 && y>-1 && x<8 && y<8;
+}
+int fx1[] = {0,0,1,-1,1,1,-1,-1};
+int fy1[] = {1,-1,0,0,1,-1,1,-1};
+
+int fx[] = {1,1,-1,-1,2,2,-2,-2};
+int fy[] = {2,-2,2,-2,1,-1,1,-1};
 int main()
 {
-//    freopen("input.txt", "r", stdin);
-////    freopen("output.txt", "w", stdout);
+#ifdef OVI
+        // freopen("input.txt", "r", stdin);
+        // freopen("output.txt", "w", stdout);
+#endif // OVI
+
     int t, tst = 1;
-    int n, m;
-    while(sf2(n, m)==2)
+    char grid[8][10], d, p;
+    FOR(i, 8) sf("%s", grid[i]);
+    sf(" %c%c", &d, &p);
+    int y = d - 'a', x = 8 - (p - '0');
+    int f = 0;
+    FOR(i, 8)
     {
-        if(n==0 && m==0) return 0;
-        int ara[n+1];
-        mem(ara, 0);
-        FOR(i, m)
+        int a = x, b = y;
+        while(isvali(a+fx1[i], b+fy1[i]))
         {
-            int u, v;
-            sf2(u, v);
-            if(v<0){
-                v = -v;
-                ara[v] = 1;
+            a = a+fx1[i], b = b+fy1[i];
+            char ch = grid[a][b];
+            if(grid[a][b]!='.'){
+                if(i<4){
+                    if(grid[a][b]=='t' || grid[a][b]=='r') f = 1;
+                }
+                if(i>=4){
+                    if(ch=='b' || ch=='r') f = 1;
+                }
+
+
+                break;
             }
         }
-        int sum = 0;
-        FOR1(i, n) sum += !ara[i];
-        pf1(sum);
     }
+    FOR(i, 8) if(isvali(x+fx[i], y+fy[i]) && grid[x+fx[i]][y+fy[i]]=='c') f = 1;
+    FOR(i, 8) if(isvali(x+fx1[i], y+fy1[i]) && grid[x+fx1[i]][y+fy1[i]]=='k') f = 1;
+    if(isvali(x+1, y+1) && grid[x+1][y+1]=='p') f = 1;
+    if(isvali(x+1, y-1) && grid[x+1][y-1]=='p') f = 1;
+
+    if(f) pf("Sim\n");
+    else pf("Nao\n");
     return 0;
 }
 

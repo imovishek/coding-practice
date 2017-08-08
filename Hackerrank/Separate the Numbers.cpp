@@ -4,7 +4,7 @@ OVISHEK PAUL, CSE - 15, SUST
 */
 
 #include<bits/stdc++.h>
-#define pii             pair<int,int>
+#define pii             pair<lint,lint>
 #define mkp             make_pair
 #define fs              first
 #define sc              second
@@ -28,41 +28,72 @@ OVISHEK PAUL, CSE - 15, SUST
 #define FOR(i,x)        for(int i=0;i<(x); i++)
 #define FOR1(i,x)       for(int i=1;i<=(x); i++)
 #define mx              100007
-#define seti(a, x)      (a|=(1<<x))
-#define check(a, x)     (a & (1<<x))
+
 using namespace std;
 typedef long long int lint;
 typedef double dbl;
 
+vector<int> edge[mx];
+int low[mx], disc[mx], vis[mx], T = 0, pos = 0;
+pii scc_solver[mx];
+stack<int> st;
+
+int dfs(int u, int p)
+{
+    low[u] = disc[u] = T++;
+    vis[u] = 1;
+    st.push(u);
+    FOR(i, edge[u].size()){
+        int v = edge[u][i];
+        if(!vis[v]){
+            dfs(v, u);
+            low[u] = min(low[u], low[v]);
+        }
+        else if(vis[v]==1) low[u] = min(low[u], disc[v]);
+    }
+    lint cnt = 1, mini = inf;
+    if(low[u]==disc[u]){
+        pf("SCC number %d# contains:\n", pos+1);
+        while(!st.empty()){
+            int x = st.top();
+            st.pop();
+            pf("%d\n", x);          // eikhaner shobgula x ekta SCC er ontorvukto
+            vis[x] = 2;
+            if(x==u) break;
+        }
+        pos++;
+    }
+}
+
 int main()
 {
-//    freopen("input.txt", "r", stdin);
-////    freopen("output.txt", "w", stdout);
     int t, tst = 1;
     int n, m;
-    while(sf2(n, m)==2)
+    sf2(n, m);
+    FOR(i, m)
     {
-        if(n==0 && m==0) return 0;
-        int ara[n+1];
-        mem(ara, 0);
-        FOR(i, m)
-        {
-            int u, v;
-            sf2(u, v);
-            if(v<0){
-                v = -v;
-                ara[v] = 1;
-            }
-        }
-        int sum = 0;
-        FOR1(i, n) sum += !ara[i];
-        pf1(sum);
+        int u, v;
+        sf2(u, v);
+        edge[u].pb(v);
     }
+
+    FOR1(i, n) {
+        if(!vis[i]) dfs(i, -1);
+    }
+
     return 0;
 }
 
+/*
+Sample Graph Input:
 
+5 4
 
+1 2
+2 3
+3 1
+4 5
+*/
 
 
 

@@ -28,39 +28,75 @@ OVISHEK PAUL, CSE - 15, SUST
 #define FOR(i,x)        for(int i=0;i<(x); i++)
 #define FOR1(i,x)       for(int i=1;i<=(x); i++)
 #define mx              100007
-#define seti(a, x)      (a|=(1<<x))
-#define check(a, x)     (a & (1<<x))
+
 using namespace std;
 typedef long long int lint;
 typedef double dbl;
+vector<int>edge[257];
+int par[257];
+int bfs(int st, int en)
+{
+    queue<int> Q;
+    Q.push(st);
+    int dist[257];
+    mem(dist, -1);
+    dist[st] = 0;
+    par[st] = -1;
+    while(!Q.empty())
+    {
+        int u = Q.front();
+        Q.pop();
+        if(u==en) return dist[u];
+        FOR(i, edge[u].size())
+        {
+            int v = edge[u][i];
+            if(dist[v]==-1)
+            {
+                par[v] = u;
+                dist[v] = dist[u] + 1;
+                Q.push(v);
+            }
+        }
+    }
+}
+void path(int u)
+{
+    if(par[u]==-1) {
+            pf("%c", u);
+            return;
+    }
+    path(par[u]);
+    pf("%c", u);
+}
 
 int main()
 {
-//    freopen("input.txt", "r", stdin);
-////    freopen("output.txt", "w", stdout);
     int t, tst = 1;
-    int n, m;
-    while(sf2(n, m)==2)
+    sf1(t);
+    while(t--)
     {
-        if(n==0 && m==0) return 0;
-        int ara[n+1];
-        mem(ara, 0);
+        int m, q;
+        sf2(m, q);
         FOR(i, m)
         {
-            int u, v;
-            sf2(u, v);
-            if(v<0){
-                v = -v;
-                ara[v] = 1;
-            }
+            string u, v;
+            cin >> u >> v;
+            edge[u[0]].pb(v[0]);
+            edge[v[0]].pb(u[0]);
         }
-        int sum = 0;
-        FOR1(i, n) sum += !ara[i];
-        pf1(sum);
+        FOR(i, q)
+        {
+            string u, v;
+            cin >> u >> v;
+            bfs(u[0], v[0]);
+            path(v[0]);
+            pf("\n");
+        }
+        if(t) pf("\n");
+        FOR(i, 257) edge[i].clear();
     }
     return 0;
 }
-
 
 
 

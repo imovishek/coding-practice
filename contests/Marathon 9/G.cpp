@@ -28,35 +28,35 @@ OVISHEK PAUL, CSE - 15, SUST
 #define FOR(i,x)        for(int i=0;i<(x); i++)
 #define FOR1(i,x)       for(int i=1;i<=(x); i++)
 #define mx              100007
-#define seti(a, x)      (a|=(1<<x))
-#define check(a, x)     (a & (1<<x))
+
 using namespace std;
 typedef long long int lint;
 typedef double dbl;
 
+
 int main()
 {
-//    freopen("input.txt", "r", stdin);
-////    freopen("output.txt", "w", stdout);
-    int t, tst = 1;
-    int n, m;
-    while(sf2(n, m)==2)
+#ifdef OVI
+         freopen("input.txt", "r", stdin);
+         freopen("output.txt", "w", stdout);
+#endif // OVI
+
+    int t, tst = 1, n, m;
+    while(sf2(n, m))
     {
-        if(n==0 && m==0) return 0;
-        int ara[n+1];
-        mem(ara, 0);
-        FOR(i, m)
-        {
-            int u, v;
-            sf2(u, v);
-            if(v<0){
-                v = -v;
-                ara[v] = 1;
-            }
+        if(n==m && m==0) return 0;
+        int ind[n+1], out[n+1];
+        mem(ind, 0);
+        mem(out, 0);
+        FOR(i, m){
+            int u, v, sig;
+            sf3(u, v, sig);
+            ind[v]++, out[u]++;
+            if(sig==2) ind[u]++, out[v]++;
         }
-        int sum = 0;
-        FOR1(i, n) sum += !ara[i];
-        pf1(sum);
+        int ans = 1;
+        FOR1(i, n) if(ind[i]==0 || out[i]==0) ans = 0;
+        pf1(ans);
     }
     return 0;
 }

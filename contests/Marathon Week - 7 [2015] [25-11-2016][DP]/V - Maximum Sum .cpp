@@ -3,7 +3,9 @@ OVISHEK PAUL, CSE - 15, SUST
 
 */
 
-#include<bits/stdc++.h>
+#include<cstdio>
+#include<cstring>
+#include<algorithm>
 #define pii             pair<int,int>
 #define mkp             make_pair
 #define fs              first
@@ -28,41 +30,75 @@ OVISHEK PAUL, CSE - 15, SUST
 #define FOR(i,x)        for(int i=0;i<(x); i++)
 #define FOR1(i,x)       for(int i=1;i<=(x); i++)
 #define mx              100007
-#define seti(a, x)      (a|=(1<<x))
-#define check(a, x)     (a & (1<<x))
+
 using namespace std;
 typedef long long int lint;
 typedef double dbl;
 
+
+int ara[105][105];
+int myturn[105], maxi = -inf;
 int main()
 {
-//    freopen("input.txt", "r", stdin);
-////    freopen("output.txt", "w", stdout);
+#ifdef OVI
+        // freopen("input.txt", "r", stdin);
+        // freopen("output.txt", "w", stdout);
+#endif // OVI
+
     int t, tst = 1;
-    int n, m;
-    while(sf2(n, m)==2)
-    {
-        if(n==0 && m==0) return 0;
-        int ara[n+1];
-        mem(ara, 0);
-        FOR(i, m)
-        {
-            int u, v;
-            sf2(u, v);
-            if(v<0){
-                v = -v;
-                ara[v] = 1;
-            }
-        }
-        int sum = 0;
-        FOR1(i, n) sum += !ara[i];
-        pf1(sum);
+    int n;
+    sf1(n);
+    mem(ara, 0);
+    FOR1(i, n){
+        FOR1(j, n) sf1(ara[i][j]);
     }
+
+    for(int i = 1; i<=n ; i++)
+    {
+        FOR1(j, n) ara[i][j]+=ara[i-1][j];
+    }
+
+//    myturn[0] = 0;
+    FOR1(i, n)
+        for(int j = i; j<=n ; j++)
+        {
+            int f = 0, ans = -inf;
+//            pf("%d %d**\n", i, j);
+            FOR1(k, n) {
+
+                myturn[k] = ara[j][k] - ara[i-1][k];
+                if(myturn[k]>=0) {f = 1;}
+                maxi = max(maxi, myturn[k]);
+//                pf("%d ", myturn[k]);
+            }
+//            pf("\n");
+            if(!f) continue;
+
+            int sum = 0;
+            for(int k = 1; k<=n; k++)
+            {
+                maxi = max(maxi, sum);
+                if(sum+myturn[k]<0){
+                    sum = 0;
+                }
+                else sum+=myturn[k];
+            }
+//            pf("%d\n", sum);
+            maxi = max(maxi, sum);
+        }
+    pf1(maxi);
     return 0;
 }
 
 
+/*
 
+2
+1 2
+-4 -3
+
+
+*/
 
 
 

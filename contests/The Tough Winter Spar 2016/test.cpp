@@ -27,36 +27,63 @@ OVISHEK PAUL, CSE - 15, SUST
 #define mem(arr,x)      memset((arr), (x), sizeof((arr)));
 #define FOR(i,x)        for(int i=0;i<(x); i++)
 #define FOR1(i,x)       for(int i=1;i<=(x); i++)
-#define mx              100007
-#define seti(a, x)      (a|=(1<<x))
-#define check(a, x)     (a & (1<<x))
+#define mx              207
+
 using namespace std;
 typedef long long int lint;
 typedef double dbl;
 
+bool ara[mx][mx];
+
+pii check()
+{
+
+    int mini = inf;
+    FOR(i, mx)
+        FOR(j, mx)
+            if(ara[i][j]==0) return pii(i, j);
+    return pii(-1, 0);
+}
 int main()
 {
-//    freopen("input.txt", "r", stdin);
-////    freopen("output.txt", "w", stdout);
+#ifdef OVI
+        // freopen("input.txt", "r", stdin);
+        // freopen("output.txt", "w", stdout);
+#endif // OVI
+
     int t, tst = 1;
-    int n, m;
-    while(sf2(n, m)==2)
+    int px = 0, py = 0;
+    int pos = 0;
+    while(1)
     {
-        if(n==0 && m==0) return 0;
-        int ara[n+1];
-        mem(ara, 0);
-        FOR(i, m)
-        {
-            int u, v;
-            sf2(u, v);
-            if(v<0){
-                v = -v;
-                ara[v] = 1;
-            }
+        pii a = check();
+        if(a.fs==-1) return 0;
+        int x = a.fs, y = a.sc;
+        if(x-px==1 && y-py==2) pf("%d ", pos);
+//        else if(x-px==2 && y-py==3) pf("b");
+        pos++;
+        px = x, py = y;
+        for(int i = x; i<mx ; i++)
+            ara[i][y] = 1;
+        for(int i = y; i<mx ; i++)
+            ara[x][i] = 1;
+        while(1){
+            x+=1, y+=1;
+            if(x>=mx || y>=mx) break;
+            ara[x][y] = 1;
         }
-        int sum = 0;
-        FOR1(i, n) sum += !ara[i];
-        pf1(sum);
+
+        x = a.sc, y = a.fs;
+        for(int i = x; i<mx ; i++)
+            ara[i][y] = 1;
+        for(int i = y; i<mx ; i++)
+            ara[x][i] = 1;
+        while(1){
+            x+=1, y+=1;
+            if(x>=mx || y>=mx) break;
+            ara[x][y] = 1;
+        }
+
     }
     return 0;
 }

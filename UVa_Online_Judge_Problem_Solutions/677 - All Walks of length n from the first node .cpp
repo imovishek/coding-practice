@@ -28,35 +28,60 @@ OVISHEK PAUL, CSE - 15, SUST
 #define FOR(i,x)        for(int i=0;i<(x); i++)
 #define FOR1(i,x)       for(int i=1;i<=(x); i++)
 #define mx              100007
-#define seti(a, x)      (a|=(1<<x))
-#define check(a, x)     (a & (1<<x))
+
 using namespace std;
 typedef long long int lint;
 typedef double dbl;
-
-int main()
+vector<int> edge[1007];
+int n, m, bflag = 0;
+vector<int> vt;
+int flag[1007];
+void rec(int pos, int u)
 {
-//    freopen("input.txt", "r", stdin);
-////    freopen("output.txt", "w", stdout);
-    int t, tst = 1;
-    int n, m;
-    while(sf2(n, m)==2)
-    {
-        if(n==0 && m==0) return 0;
-        int ara[n+1];
-        mem(ara, 0);
+    if(pos==m){
+        pf("(1");
+        bflag = 1;
         FOR(i, m)
         {
-            int u, v;
-            sf2(u, v);
-            if(v<0){
-                v = -v;
-                ara[v] = 1;
-            }
+            pf(",%d",vt[i]+1);
         }
-        int sum = 0;
-        FOR1(i, n) sum += !ara[i];
-        pf1(sum);
+        pf(")\n");
+        return;
+    }
+    FOR(i, edge[u].size())
+    {
+        int v = edge[u][i];
+        if(!flag[v]){
+            flag[v] = 1;
+            vt.pb(v);
+            rec(pos+1, v);
+            vt.ppb;
+            flag[v] = 0;
+        }
+    }
+}
+int main()
+{
+    int t, tst = 1;
+    while(sf2(n, m)==2){
+
+        if(tst!=1) pf("\n");
+        tst++;
+        FOR(i, n)
+            FOR(j, n)
+            {
+                int a;
+                sf1(a);
+                if(a) {
+                        edge[i].pb(j);
+                }
+            }
+        flag[0] = 1;
+        bflag = 0;
+        rec(0, 0);
+        if(!bflag) pf("no walk of length %d\n", m);
+        FOR(i, n) edge[i].clear();
+        sf1(n);
     }
     return 0;
 }

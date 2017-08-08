@@ -11,7 +11,7 @@ OVISHEK PAUL, CSE - 15, SUST
 #define pb              push_back
 #define ppb             pop_back()
 #define pf              printf
-#define pf1(a)          printf("%d\n",a)
+#define pf1(a)          printf("%llu\n",a)
 #define hi              printf("hi!\n");
 #define sf              scanf
 #define sf1(a)          scanf("%d",&a)
@@ -28,35 +28,61 @@ OVISHEK PAUL, CSE - 15, SUST
 #define FOR(i,x)        for(int i=0;i<(x); i++)
 #define FOR1(i,x)       for(int i=1;i<=(x); i++)
 #define mx              100007
-#define seti(a, x)      (a|=(1<<x))
-#define check(a, x)     (a & (1<<x))
+
 using namespace std;
 typedef long long int lint;
+typedef unsigned long long int ulint;
 typedef double dbl;
+
+struct mat{
+    ulint X[2][2];
+    mat(){
+        mem(X, 0);
+    }
+};
+
+mat mult(mat a, mat b){
+    mat ret;
+    FOR(i, 2)
+        FOR(j, 2){
+            ulint ans = 0;
+            FOR(k, 2) ans += a.X[i][k] * b.X[k][j];
+            ret.X[i][j] = ans;
+        }
+    return ret;
+}
+
+mat power(mat a, int p)
+{
+    if(p==1) return a;
+    if(p&1) return mult(a, power(a, p-1));
+    mat mo = power(a, p/2);
+    return mult(mo, mo);
+}
 
 int main()
 {
-//    freopen("input.txt", "r", stdin);
-////    freopen("output.txt", "w", stdout);
+#ifdef OVI
+        // freopen("input.txt", "r", stdin);
+        // freopen("output.txt", "w", stdout);
+#endif // OVI
+
     int t, tst = 1;
-    int n, m;
-    while(sf2(n, m)==2)
+    sf1(t);
+    while(t--)
     {
-        if(n==0 && m==0) return 0;
-        int ara[n+1];
-        mem(ara, 0);
-        FOR(i, m)
-        {
-            int u, v;
-            sf2(u, v);
-            if(v<0){
-                v = -v;
-                ara[v] = 1;
-            }
-        }
-        int sum = 0;
-        FOR1(i, n) sum += !ara[i];
-        pf1(sum);
+        int p, q, n;
+        sf3(p, q, n);
+        pcase(tst++);
+        if(n==0) {pf1(2); continue;}
+        if(n==1) {pf1(p); continue;}
+        n--;
+        mat a;
+        a.X[0][0] = p;
+        a.X[0][1] = -q;
+        a.X[1][0] = 1;
+        a = power(a, n);
+        pf1(a.X[0][0] * p + a.X[0][1] * 2);
     }
     return 0;
 }

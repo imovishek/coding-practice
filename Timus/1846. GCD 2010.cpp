@@ -28,39 +28,63 @@ OVISHEK PAUL, CSE - 15, SUST
 #define FOR(i,x)        for(int i=0;i<(x); i++)
 #define FOR1(i,x)       for(int i=1;i<=(x); i++)
 #define mx              100007
-#define seti(a, x)      (a|=(1<<x))
-#define check(a, x)     (a & (1<<x))
+
 using namespace std;
 typedef long long int lint;
 typedef double dbl;
+int ara[mx];
+int tree[mx*4];
+int gcd(int a, int b)
+{
+    if(a<b) return gcd(b, a);
+    if(b==0) return a;
+    return gcd(b, a%b);
+}
+
+int update(int node, int b, int e, int i, int val)
+{
+    if(b==e && b==i) return tree[node] = val;
+    if(i<b || e<i) return 0;
+
+    int lson = node*2, rson = lson+1, mid = b+(e-b)/2;
+    update(lson, b, mid, i, val);
+    update(rson, mid+1, e, i, val);
+    return tree[node] = gcd(tree[lson], tree[rson]);
+}
 
 int main()
 {
-//    freopen("input.txt", "r", stdin);
-////    freopen("output.txt", "w", stdout);
+#ifdef OVI
+        // freopen("input.txt", "r", stdin);
+        // freopen("output.txt", "w", stdout);
+#endif // OVI
+
     int t, tst = 1;
-    int n, m;
-    while(sf2(n, m)==2)
+    int pos = 0;
+    int q, n = mx;
+    map<int, vector<int> > mp;
+    sf1(q);
+    while(q--)
     {
-        if(n==0 && m==0) return 0;
-        int ara[n+1];
-        mem(ara, 0);
-        FOR(i, m)
-        {
-            int u, v;
-            sf2(u, v);
-            if(v<0){
-                v = -v;
-                ara[v] = 1;
-            }
+        char ch;
+        int a;
+        sf(" %c %d", &ch, &a);
+        if(ch=='+'){
+            int ans = update(1, 0, n-1, pos, a);
+            if(ans==0) ans = 1;
+            pf1(ans);
+            mp[a].push_back(pos++);
         }
-        int sum = 0;
-        FOR1(i, n) sum += !ara[i];
-        pf1(sum);
+        else{
+            int i = mp[a].back();
+            mp[a].pop_back();
+            int ans = update(1, 0, n-1, i, 0);
+            if(ans==0) ans = 1;
+            pf1(ans);
+        }
     }
     return 0;
 }
-
 
 
 

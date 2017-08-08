@@ -28,35 +28,69 @@ OVISHEK PAUL, CSE - 15, SUST
 #define FOR(i,x)        for(int i=0;i<(x); i++)
 #define FOR1(i,x)       for(int i=1;i<=(x); i++)
 #define mx              100007
-#define seti(a, x)      (a|=(1<<x))
-#define check(a, x)     (a & (1<<x))
+
 using namespace std;
 typedef long long int lint;
 typedef double dbl;
+int lazy[mx*4];
+char ara[mx];
+
+void update(int node, int b, int e, int i, int j)
+{
+    if(e<i || j<b) return;
+    if(i<=b && e<=j) {
+            lazy[node]^=1;
+            return;
+    }
+
+    int lson = node*2, rson = lson+1, mid = b + (e-b)/2;
+    update(lson, b, mid, i, j);
+    update(rson, mid+1, e, i, j);
+}
+
+int query(int node, int b, int e, int i)
+{
+    if(i<b || e<i) return 0;
+    if(b==e && i==b) return (ara[i] - '0') ^ lazy[node];
+    int lson = node*2, rson = lson+1, mid = b + (e-b)/2;
+    int x = query(lson, b, mid, i);
+    int y = query(rson, mid+1, e, i);
+    return (x^y) ^ lazy[node];
+}
 
 int main()
 {
-//    freopen("input.txt", "r", stdin);
-////    freopen("output.txt", "w", stdout);
+#ifdef OVI
+        // freopen("input.txt", "r", stdin);
+        // freopen("output.txt", "w", stdout);
+#endif // OVI
+
     int t, tst = 1;
-    int n, m;
-    while(sf2(n, m)==2)
+    sf1(t);
+    while(t--)
     {
-        if(n==0 && m==0) return 0;
-        int ara[n+1];
-        mem(ara, 0);
-        FOR(i, m)
+        sf("%s", ara);
+        int n = strlen(ara);
+        mem(lazy, 0);
+        int q;
+        sf1(q);
+
+        pf("Case %d:\n", tst++);
+
+        while(q--)
         {
-            int u, v;
-            sf2(u, v);
-            if(v<0){
-                v = -v;
-                ara[v] = 1;
+            char ch;
+            int i, j;
+            sf(" %c", &ch);
+            if(ch=='I'){
+                sf2(i, j);
+                update(1, 0, n-1, i-1, j-1);
+            }
+            else{
+                sf1(i);
+                pf1(query(1, 0, n-1, i-1));
             }
         }
-        int sum = 0;
-        FOR1(i, n) sum += !ara[i];
-        pf1(sum);
     }
     return 0;
 }

@@ -10,6 +10,7 @@ OVISHEK PAUL, CSE - 15, SUST
 #define sc              second
 #define pb              push_back
 #define ppb             pop_back()
+#define all(vt)         vt.begin(), vt.end()
 #define pf              printf
 #define pf1(a)          printf("%d\n",a)
 #define hi              printf("hi!\n");
@@ -27,39 +28,58 @@ OVISHEK PAUL, CSE - 15, SUST
 #define mem(arr,x)      memset((arr), (x), sizeof((arr)));
 #define FOR(i,x)        for(int i=0;i<(x); i++)
 #define FOR1(i,x)       for(int i=1;i<=(x); i++)
-#define mx              100007
-#define seti(a, x)      (a|=(1<<x))
-#define check(a, x)     (a & (1<<x))
+#define repr(vt, it)    for(typeof(vt.begin()) it = vt.begin(); it!=vt.end(); it++)
+#define mx              1000007
+
 using namespace std;
 typedef long long int lint;
 typedef double dbl;
+typedef vector<int> vi;
+vi edge[mx];
+int ara[mx];
+int sum = 0;
+vi ans;
+int dfs(int u, int p)
+{
+    int now = ara[u];
+    FOR(i, edge[u].size())
+    {
+        int v = edge[u][i];
+        if(v==p) continue;
+        now += dfs(v, u);
+    }
+    if(now==sum && p!=-1) {ans.pb(u); now = 0;}
+    return now;
+}
 
 int main()
 {
-//    freopen("input.txt", "r", stdin);
-////    freopen("output.txt", "w", stdout);
+#ifdef OVI
+        // freopen("input.txt", "r", stdin);
+        // freopen("output.txt", "w", stdout);
+#endif // OVI
+
     int t, tst = 1;
-    int n, m;
-    while(sf2(n, m)==2)
-    {
-        if(n==0 && m==0) return 0;
-        int ara[n+1];
-        mem(ara, 0);
-        FOR(i, m)
-        {
-            int u, v;
-            sf2(u, v);
-            if(v<0){
-                v = -v;
-                ara[v] = 1;
-            }
-        }
-        int sum = 0;
-        FOR1(i, n) sum += !ara[i];
-        pf1(sum);
+    int n;
+    sf1(n);
+    int root;
+    int total = 0;
+    FOR1(i, n){
+        int u, v;
+        sf2(u, v);
+        if(u==0) root = i;
+        else edge[u].pb(i), edge[i].pb(u);
+        ara[i] = v;
+        total += v;
     }
+    if(total%3){pf("-1\n"); return 0;}
+    sum = total/3;
+    dfs(root, -1);
+    if(ans.size()>=2) pf("%d %d\n", ans[0], ans[1]);
+    else pf("-1\n");
     return 0;
 }
+
 
 
 

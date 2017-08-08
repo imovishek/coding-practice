@@ -27,36 +27,70 @@ OVISHEK PAUL, CSE - 15, SUST
 #define mem(arr,x)      memset((arr), (x), sizeof((arr)));
 #define FOR(i,x)        for(int i=0;i<(x); i++)
 #define FOR1(i,x)       for(int i=1;i<=(x); i++)
-#define mx              100007
-#define seti(a, x)      (a|=(1<<x))
-#define check(a, x)     (a & (1<<x))
+#define mx              800007
+
 using namespace std;
 typedef long long int lint;
 typedef double dbl;
+vector<int> edge[mx];
+int dist[mx];
+int n;
+int bfs(int t, int g)
+{
+    queue<int> q;
+    q.push(t);
+    FOR1(i, n) dist[i] = -1;
+    dist[t] = 0;
+    while(!q.empty())
+    {
+        int u = q.front();
+        q.pop();
+        if(u==g) return dist[u];
+        FOR(i, edge[u].size())
+        {
+            int v = edge[u][i];
+            if(dist[v]==-1){
+                dist[v] = dist[u] + 1;
+                q.push(v);
+            }
+        }
+    }
+    return -1;
+}
 
 int main()
 {
-//    freopen("input.txt", "r", stdin);
-////    freopen("output.txt", "w", stdout);
+#ifdef OVI
+        // freopen("input.txt", "r", stdin);
+        // freopen("output.txt", "w", stdout);
+#endif // OVI
+
     int t, tst = 1;
-    int n, m;
-    while(sf2(n, m)==2)
+    sf1(t);
+    while(t--)
     {
-        if(n==0 && m==0) return 0;
+        int m;
+        sf2(m, n);
         int ara[n+1];
-        mem(ara, 0);
-        FOR(i, m)
-        {
+        FOR1(i, n) sf1(ara[i]);
+        FOR(i, m){
             int u, v;
             sf2(u, v);
-            if(v<0){
-                v = -v;
-                ara[v] = 1;
-            }
+            edge[u].pb(v);
+            edge[v].pb(u);
         }
-        int sum = 0;
-        FOR1(i, n) sum += !ara[i];
-        pf1(sum);
+        int t, g;
+        sf2(t, g);
+        int sig = bfs(t, g);
+        pcase(tst++);
+        if(sig==-1){
+            pf("Path not found\n");
+        }
+        else{
+            if(ara[g]<sig) pf("Don't travel\n");
+            else pf("%d\n", ara[g]-sig);
+        }
+        FOR1(i, n) edge[i].clear();
     }
     return 0;
 }

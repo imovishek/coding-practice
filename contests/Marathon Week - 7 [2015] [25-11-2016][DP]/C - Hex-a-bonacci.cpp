@@ -28,35 +28,31 @@ OVISHEK PAUL, CSE - 15, SUST
 #define FOR(i,x)        for(int i=0;i<(x); i++)
 #define FOR1(i,x)       for(int i=1;i<=(x); i++)
 #define mx              100007
-#define seti(a, x)      (a|=(1<<x))
-#define check(a, x)     (a & (1<<x))
+
 using namespace std;
 typedef long long int lint;
 typedef double dbl;
 
-int main()
-{
-//    freopen("input.txt", "r", stdin);
-////    freopen("output.txt", "w", stdout);
-    int t, tst = 1;
-    int n, m;
-    while(sf2(n, m)==2)
-    {
-        if(n==0 && m==0) return 0;
-        int ara[n+1];
-        mem(ara, 0);
-        FOR(i, m)
-        {
-            int u, v;
-            sf2(u, v);
-            if(v<0){
-                v = -v;
-                ara[v] = 1;
-            }
-        }
-        int sum = 0;
-        FOR1(i, n) sum += !ara[i];
-        pf1(sum);
+
+int a, b, c, d, e, f;
+int dp[10007];
+int fn( int n ) {
+    if( n == 0 ) return a% 10000007;
+    if( n == 1 ) return b% 10000007;
+    if( n == 2 ) return c% 10000007;
+    if( n == 3 ) return d% 10000007;
+    if( n == 4 ) return e% 10000007;
+    if( n == 5 ) return f% 10000007;
+    if(dp[n]!=-1) return dp[n];
+    return dp[n] = ( fn(n-1) + fn(n-2) + fn(n-3) + fn(n-4) + fn(n-5) + fn(n-6) ) % 10000007;
+}
+int main() {
+    int n, caseno = 0, cases;
+    scanf("%d", &cases);
+    while( cases-- ) {
+        mem(dp, -1);
+        scanf("%d %d %d %d %d %d %d", &a, &b, &c, &d, &e, &f, &n);
+        printf("Case %d: %d\n", ++caseno, fn(n) % 10000007);
     }
     return 0;
 }
