@@ -1,17 +1,19 @@
 #include<bits/stdc++.h>
-#define mx 500007
 using namespace std;
+#define mx 1005
 int sp_table[mx][23];
-int p[mx], L[mx];
-vector<int> edge[mx];
+int p[mx], L[mx], dist[mx];
+vector< pair<int, int> > edge[mx];
 int dfs(int u, int from)
 {
 	p[u] = from;
 	for(int i = 0; i<edge[u].size(); i++)
 	{
-		int v = edge[u][i];
+		int v = edge[u][i].first;
+		int w = edge[u][i].second;
 		if(v!=from){
 			L[v] = L[u] + 1;
+			dist[v] = dist[u] ^ w;
 			dfs(v, u);
 		}
 	}
