@@ -2,7 +2,7 @@
 3 3
 3 5 11
 */
-
+// solution to problme codeforces 632E
 #include <bits/stdc++.h>
  
 #define forn(i, n) for (int i = 0; i < int(n); i++)
