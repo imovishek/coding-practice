@@ -1,3 +1,6 @@
+#define gc getchar_unlocked
+#define pc putchar_unlocked
+
 inline  int get_num()                     
 {
 	register  int n=0,c=gc();
