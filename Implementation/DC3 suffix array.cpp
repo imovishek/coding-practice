@@ -1,24 +1,33 @@
-#include<stdio.h>
-#include<string.h>
-#define N 2000005
+/*input
+yeshowmuchiloveyoumydearmotherreallyicannotbelieveit
+yeaphowmuchiloveyoumydearmother
+
+*/
+#include <iostream>
+#include <algorithm>
+#include <cstdio>
+#include <cstring>
+using namespace std;
+#define N 200005
 #define F(x) ((x)/3+((x)%3==1?0:tb))
 #define G(x) ((x)<tb?(x)*3+1:((x)-tb)*3+2)
+#define ws ww
+#define rank rnk
 int wa[N],wb[N],wv[N],ws[N];
-int rank[N],height[N];
-int sa[N],r[N];
+int rank[N],height[N];    
+int sa[3*N],r[3*N];
 char c[N];
-int lcp[N];
 int Max(int a,int b)
 {
     return a>b?a:b;
-}
+} 
 int Min(int a,int b)
 {
     return a<b?a:b;
 }
 int cmp(int *y,int a,int b,int l)
 {
-    return y[a]==y[b]&&y[a+l]==y[b+l];
+    return y[a]==y[b]&&y[a+l]==y[b+l];   
 }
 
 int c0(int *y,int a,int b)
@@ -51,7 +60,7 @@ void dc3(int *r,int *sa,int n,int m)
     for(p=1,rn[F(wb[0])]=0,i=1;i<tbc;i++)
         rn[F(wb[i])]=c0(r,wb[i-1],wb[i])?p-1:p++;
     if(p<tbc) dc3(rn,san,tbc,p);
-        else for(i=0;i<tbc;i++) san[rn[i]]=i;
+    else for(i=0;i<tbc;i++) san[rn[i]]=i;
     for(i=0;i<tbc;i++) if(san[i]<tb) wb[ta++]=san[i]*3;
     if(n%3==1) wb[ta++]=n-1;
     sort(r,wb,wa,ta,m);
@@ -68,35 +77,26 @@ void get_height(int n)
     for(i=0;i<=n;i++) rank[sa[i]]=i;
     for(i=0;i<n;height[rank[i++]]=k)
         for(k?k--:0,j=sa[rank[i]-1];r[i+k]==r[j+k];k++);
-    return;
+    return; 
 }
-int main(void)
+char a[N], b[N];
+int main()
 {
-    while(scanf("%s",c)!=EOF)
+	scanf("%s %s", a, b);
+    int len1 = strlen(a);
+    strcat(a, "#");
+    strcat(a, b);
+    int len2 = strlen(a);
+    for(int i = 0; i<=len2; i++)
+        r[i] = a[i];
+    dc3(r, sa, len2+1, 256);
+    get_height(len2);
+    int ans = 0;
+    for(int i = 2; i<=len2; i++)
     {
-        if(strcmp(c,".")==0) break;
-        int n=strlen(c);
-        for(int i=0;i<n;i++)
-            r[i]=c[i]+1;
-        r[n]=0;
-        dc3(r,sa,n+1,256);
-        get_height(n);
-        //for(int i=0;i<n;i++) printf("%d %d %d\n",i,rank[i],height[i]);
-        memset(lcp,0,sizeof(lcp));
-        lcp[rank[0]]=N;
-        for(int i=rank[0]-1;i>=0;i--) lcp[i]=Min(lcp[i+1],height[i+1]);
-        for(int i=rank[0]+1;i<=n;i++) lcp[i]=Min(lcp[i-1],height[i]);
-        //for(int i=0;i<=n;i++) printf("%d %d %d\n",rank[i],height[i],lcp[i]);
-        for(int k=1;k<=n;k++)
-            if(n%k==0 && lcp[rank[k]]==n-k){
-                printf("%d\n",n/k);
-                break;
-            }
+        if((sa[i-1] < len1 && sa[i] > len1) || (sa[i-1] > len1 && sa[i] < len1))
+            ans = max(ans, height[i]);
     }
-    return 0;
+    printf("%d\n", ans);
+	return 0;
 }
-/*
-abcd
-aaaa
-ababab
-*/
