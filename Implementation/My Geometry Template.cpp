@@ -36,6 +36,9 @@ struct PT{
         printf("(%.4f, %.4f)", x, y);
     }
 };
+struct line{
+    double a, b, c;
+};
 
 double dist(PT a, PT b)
 {
@@ -87,6 +90,47 @@ PT ProjectPointSegment(PT a, PT b, PT c)
 double DistancePointSegment(PT a, PT b, PT c)
 {
     return sqrt(dist2(c, ProjectPointSegment(a, b, c)));
+}
+// returns bisector of angle YXZ
+line bisector(PT Y, PT X, PT Z)
+{
+    PT xy = (Y - X)/(Y - X).val();
+    PT xz = (Z - X)/(Z - X).val();
+    PT d = xy + xz;
+    line ret{d.y, -d.x, d.x * X.y - d.y * X.x};
+    return ret;
+}
+
+vector<PT> CircleLineIntersection(PT a, PT b, PT c, double r)
+{
+    vector<PT>ret;
+    b=b-a;
+    a=a-c;
+
+    double A=dot(b, b);
+    double B=dot(a, b);
+    double C=dot(a, a)-r*r;
+    double D=B*B-A*C;
+
+    if(D<-EPS) return ret;
+
+    ret.push_back(c+a+b*(-B+sqrt(D+EPS))/A);
+
+    if(D>EPS) ret.push_back(c+a+b*(-B-sqrt(D))/A);
+
+    return ret;
+}
+PT ComputeLineIntersection(PT a, PT b, PT c, PT d)
+{
+    double a1=a.y-b.y;
+    double b1=b.x-a.x;
+    double c1=cross(a, b);
+    double a2=c.y-d.y;
+    double b2=d.x-c.x;
+    double c2=cross(c, d);
+    double D=a1*b2-a2*b1;
+
+    return PT((b1*c2-b2*c1)/D, (c1*a2-c2*a1)/D);
 }
 
 int main()
