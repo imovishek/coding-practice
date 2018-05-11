@@ -135,6 +135,11 @@ PT ComputeLineIntersection(PT a, PT b, PT c, PT d)
 
 int main()
 {
+    int t, tst = 1;
+    scanf("%d", &t);
+    while(t--)
+    {
 
+    }
     return 0;
 }
