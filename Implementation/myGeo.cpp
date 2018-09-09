@@ -39,7 +39,12 @@ struct PT{
     {
         printf("(%.4f, %.4f)", x, y);
     }
+    inline bool operator<(PT p) const{
+        return x<p.x || (x==p.x && y<p.y);
+    }
 };
+
+
 struct line{
     double a, b, c;
 };
@@ -160,32 +165,61 @@ double CircleArcDistance(PT c, double r, PT a, PT b)
     double angle = acos((2.0*r*r - d*d) / (2.0*r*r));
     return r * angle;
 }
+
+inline double cross(PT O, PT A, PT B)
+{
+    return (A.x - O.x) * (B.y - O.y) - (A.y - O.y) * (B.x - O.x);
+}
+inline vector<PT> convex_hull(vector<PT> P)
+{
+    int n = P.size(), k = 0;
+    vector<PT> H(2*n);
+    sort(P.begin(), P.end());
+    for(int i = 0; i<n; i++)
+    {
+        while(k>=2 && cmp(cross(H[k-2], H[k-1], P[i])) <= 0) k--;
+        H[k++] = P[i];
+    }
+    for(int i = n-2, t = k+1; i>=0; i--)
+    {
+        while(k>=t && cmp(cross(H[k-2], H[k-1], P[i])) <= 0) k--;
+        H[k++] = P[i];
+    }
+    H.resize(k-1);
+    return H;
+}
+double ComputeSignedArea(const vector<PT> &p)
+{
+    double area = 0;
+    for(int i = 0; i < p.size(); i++)
+    {
+        int j = (i+1) % p.size();
+        area += p[i].x*p[j].y - p[j].x*p[i].y;
+    }
+    return area / 2.0;
+}
+
+double ComputeArea(const vector<PT> &p)
+{
+    return fabs(ComputeSignedArea(p));
+}
+
+PT ComputeCentroid(const vector<PT> &p)
+{
+    PT c(0,0);
+    double scale = 6.0 * ComputeSignedArea(p);
+    for (int i = 0; i < p.size(); i++)
+    {
+        int j = (i+1) % p.size();
+        c = c + (p[i]+p[j])*(p[i].x*p[j].y - p[j].x*p[i].y);
+    }
+    return c / scale;
+}
+int vis[101];
 int main()
 {
-    int t;
-    scanf("%d", &t);
-    while(t--)
-    {
-        PT a, b, c;
-        double r;
-        a.scan();
-        b.scan();
-        scanf("%lf", &r);
-        c = PT(0, 0);
-        double ans = big;
-        if(DistancePointSegment(a,b,c) >= r) ans = dist(a, b);
-        auto vtA = CircleTouchingPoints(c, r, a);
-        auto vtB = CircleTouchingPoints(c, r, b);
-        for(int i = 0; i<2; i++)
-        {
-            for(int j = 0; j<2; j++)
-            {
-                double d = dist(a, vtA[i]) + dist(b, vtB[j]) + CircleArcDistance(c, r, vtA[i], vtB[j]);
-                ans = min(ans, d);
-            }
-        }
-        printf("%.3f\n", ans);
-    }
+    
+
     return 0;
 }
 
