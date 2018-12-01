@@ -158,6 +158,19 @@ vector<PT> CircleTouchingPoints(PT c, double r, PT a)
     ret.push_back(ac + a);
     return ret;
 }
+vector<PT> CircleCircleIntersection(PT a, PT b, double r, double R)
+{
+    vector<PT> ret;
+    double d = sqrt(dist2(a, b));
+    if (d > r+R || d+min(r, R) < max(r, R)) return ret;
+    double x = (d*d-R*R+r*r)/(2*d);
+    double y = sqrt(r*r-x*x);
+    PT v = (b-a)/d;
+    ret.push_back(a+v*x + RotateCCW90(v)*y);
+    if (y > 0)
+        ret.push_back(a+v*x - RotateCCW90(v)*y);
+    return ret;
+}
 
 double CircleArcDistance(PT c, double r, PT a, PT b)
 {
@@ -215,11 +228,10 @@ PT ComputeCentroid(const vector<PT> &p)
     }
     return c / scale;
 }
-int vis[101];
+
 int main()
 {
     
-
     return 0;
 }
 
