@@ -3,22 +3,22 @@ using namespace std;
 #define mx 100005
 #define ll long long
 #define PI acos(-1.00)
-struct point{
+struct PT{
     ll x, y;
-    point(int x, int y) : x (x), y(y) {}
-    point(){}
-    inline bool operator<(point p) const{
+    PT(int x, int y) : x (x), y(y) {}
+    PT(){}
+    inline bool operator<(PT p) const{
         return x<p.x || (x==p.x && y<p.y);
     }
 };
-inline ll cross(point O, point A, point B)
+inline ll cross(PT O, PT A, PT B)
 {
     return (A.x - O.x) * (B.y - O.y) - (A.y - O.y) * (B.x - O.x);
 }
-inline vector<point> convex_hull(vector<point> P)
+inline vector<PT> convex_hull(vector<PT> P)
 {
     int n = P.size(), k = 0;
-    vector<point> H(2*n);
+    vector<PT> H(2*n);
     sort(P.begin(), P.end());
     for(int i = 0; i<n; i++)
     {

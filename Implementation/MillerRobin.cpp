@@ -26,7 +26,7 @@ bool millerRobin(ll p, int iter = 20)
 
     for(int i = 0; i<iter; i++)
     {
-        ll a = ((rand() << 15) | rand()) % (p-4) + 2;
+        ll a = rand() % (p-4) + 2;
         ll s = p - 1;
         while(s%2==0) s/=2;
         ll mod = bigmod(a, s, p);
