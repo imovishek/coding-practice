@@ -82,7 +82,7 @@ int main() {
 		}
 	}
     
-    cout << "SCC gulo holo:\n";
+  cout << "SCC gulo holo:\n";
 	for (auto s : scc) {
 		for (int x : s) {
 			cout << x << " ";
