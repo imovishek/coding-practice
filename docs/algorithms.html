@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Algorithms — Ovishek's CP Blog</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:      #0d1117;
+      --surface: #161b22;
+      --surface2:#1c2128;
+      --border:  #30363d;
+      --text:    #c9d1d9;
+      --muted:   #8b949e;
+      --green:   #3fb950;
+      --cyan:    #58a6ff;
+      --yellow:  #e3b341;
+      --red:     #f85149;
+      --purple:  #bc8cff;
+      --orange:  #d18616;
+    }
+    body { background: var(--bg); color: var(--text); font-family: 'JetBrains Mono', monospace; min-height: 100vh; }
+    a { color: var(--cyan); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* NAV */
+    nav {
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 56px; position: sticky; top: 0; background: var(--bg); z-index: 100;
+    }
+    .nav-logo { font-weight: 700; font-size: 1rem; color: var(--green); }
+    .nav-logo span { color: var(--muted); font-weight: 400; }
+    .nav-links { display: flex; gap: 1.5rem; font-size: 0.85rem; }
+    .nav-links a { color: var(--muted); }
+    .nav-links a:hover { color: var(--text); text-decoration: none; }
+
+    /* LAYOUT */
+    .layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      height: calc(100vh - 56px);
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      padding: 1.5rem 0;
+    }
+    .sidebar-title {
+      font-size: 0.65rem; text-transform: uppercase; letter-spacing: 2px;
+      color: var(--muted); padding: 0 1.2rem; margin-bottom: 0.8rem;
+    }
+    .algo-btn {
+      display: block; width: 100%; text-align: left;
+      padding: 0.55rem 1.2rem;
+      background: none; border: none; border-left: 2px solid transparent;
+      color: var(--muted); font-family: inherit; font-size: 0.8rem;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .algo-btn:hover { color: var(--text); background: var(--surface); }
+    .algo-btn.active { color: var(--green); border-left-color: var(--green); background: var(--surface); }
+    .algo-btn .tag {
+      float: right; font-size: 0.6rem; padding: 1px 5px; border-radius: 3px;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .tag-tree   { background: rgba(63,185,80,0.15);  color: var(--green); }
+    .tag-string { background: rgba(88,166,255,0.15); color: var(--cyan); }
+    .tag-graph  { background: rgba(188,140,255,0.15);color: var(--purple); }
+    .tag-math   { background: rgba(227,179,65,0.15); color: var(--yellow); }
+    .tag-geo    { background: rgba(248,81,73,0.15);  color: var(--red); }
+    .tag-ds     { background: rgba(209,134,22,0.15); color: var(--orange); }
+
+    /* MAIN */
+    .main { overflow-y: auto; display: flex; flex-direction: column; }
+
+    .algo-view { display: none; flex-direction: column; height: 100%; }
+    .algo-view.visible { display: flex; }
+
+    .algo-header { padding: 1.5rem 2rem 1rem; border-bottom: 1px solid var(--border); }
+    .algo-header h1 { font-size: 1.3rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .algo-meta { display: flex; gap: 0.8rem; align-items: center; flex-wrap: wrap; }
+    .algo-meta .badge {
+      font-size: 0.65rem; padding: 2px 8px; border-radius: 4px;
+      text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;
+    }
+    .complexity { color: var(--muted); font-size: 0.8rem; }
+
+    .algo-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .desc-panel {
+      padding: 1.5rem 2rem;
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      font-size: 0.82rem;
+      line-height: 1.8;
+    }
+    .desc-panel h3 {
+      font-size: 0.65rem; text-transform: uppercase; letter-spacing: 2px;
+      color: var(--muted); margin-bottom: 0.8rem;
+    }
+    .desc-panel p { color: var(--text); margin-bottom: 1rem; }
+    .desc-panel ul { color: var(--text); padding-left: 1.2rem; margin-bottom: 1rem; }
+    .desc-panel li { margin-bottom: 0.3rem; }
+    .highlight { color: var(--green); font-weight: 600; }
+    .use-case {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-left: 3px solid var(--green);
+      border-radius: 4px; padding: 0.8rem 1rem;
+      margin-top: 0.5rem; font-size: 0.78rem; color: var(--muted);
+    }
+
+    .code-panel { overflow: auto; background: var(--surface); position: relative; }
+    .code-label {
+      position: sticky; top: 0;
+      font-size: 0.65rem; text-transform: uppercase; letter-spacing: 2px;
+      color: var(--muted); padding: 0.6rem 1.2rem;
+      background: var(--surface2); border-bottom: 1px solid var(--border);
+      z-index: 1;
+    }
+    pre {
+      padding: 1.2rem;
+      font-size: 0.75rem;
+      line-height: 1.7;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    /* Minimal syntax colouring */
+    .kw  { color: #ff7b72; }  /* keywords */
+    .ty  { color: #ffa657; }  /* types */
+    .cm  { color: #8b949e; font-style: italic; } /* comments */
+    .st  { color: #a5d6ff; }  /* strings */
+    .nm  { color: #79c0ff; }  /* numbers */
+    .fn  { color: #d2a8ff; }  /* functions */
+
+    /* EMPTY STATE */
+    .empty-state {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      height: 100%; color: var(--muted); gap: 0.8rem;
+    }
+    .empty-state .big { font-size: 2rem; }
+    .empty-state p { font-size: 0.85rem; }
+
+    @media (max-width: 768px) {
+      .layout { grid-template-columns: 1fr; height: auto; }
+      .sidebar { height: auto; border-right: none; border-bottom: 1px solid var(--border); }
+      .algo-body { grid-template-columns: 1fr; }
+      .desc-panel { border-right: none; border-bottom: 1px solid var(--border); }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">&gt; ovishek<span>.cpp</span></a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="algorithms.html" style="color:var(--green)">Algorithms</a>
+    <a href="https://github.com/imovishek/coding-practice" target="_blank">GitHub</a>
+  </div>
+</nav>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-title">// templates</div>
+
+    <button class="algo-btn" onclick="show('dsu')">DSU <span class="tag tag-ds">DS</span></button>
+    <button class="algo-btn" onclick="show('segtree')">Segment Tree <span class="tag tag-ds">DS</span></button>
+    <button class="algo-btn" onclick="show('hld')">Heavy-Light Decomp <span class="tag tag-tree">Tree</span></button>
+    <button class="algo-btn" onclick="show('lca')">LCA <span class="tag tag-tree">Tree</span></button>
+    <button class="algo-btn" onclick="show('kmp')">KMP <span class="tag tag-string">String</span></button>
+    <button class="algo-btn" onclick="show('zalgo')">Z Algorithm <span class="tag tag-string">String</span></button>
+    <button class="algo-btn" onclick="show('mos')">Mo's Algorithm <span class="tag tag-ds">DS</span></button>
+    <button class="algo-btn" onclick="show('fft')">FFT <span class="tag tag-math">Math</span></button>
+    <button class="algo-btn" onclick="show('convex')">Convex Hull <span class="tag tag-geo">Geo</span></button>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- EMPTY STATE -->
+    <div class="empty-state" id="empty">
+      <div class="big">&lt;/&gt;</div>
+      <p>Select an algorithm from the sidebar</p>
+    </div>
+
+    <!-- DSU -->
+    <div class="algo-view" id="view-dsu">
+      <div class="algo-header">
+        <h1>Disjoint Set Union</h1>
+        <div class="algo-meta">
+          <span class="badge tag-ds">Data Structure</span>
+          <span class="complexity">Time: O(α(n)) per op &nbsp;·&nbsp; Space: O(n)</span>
+        </div>
+      </div>
+      <div class="algo-body">
+        <div class="desc-panel">
+          <h3>// description</h3>
+          <p>DSU (also called Union-Find) maintains a collection of disjoint sets and supports two operations efficiently: <span class="highlight">merge</span> two sets, and <span class="highlight">find</span> the representative (root) of a set.</p>
+          <p>This implementation uses two classic optimisations:</p>
+          <ul>
+            <li><span class="highlight">Path compression</span> — on every <code>rootof</code> call, all nodes on the path are linked directly to the root.</li>
+            <li><span class="highlight">Union by rank</span> — always attach the shorter tree under the taller one to keep trees flat.</li>
+          </ul>
+          <p>Together these give an amortised near-constant O(α(n)) per operation, where α is the inverse Ackermann function (≤ 4 for any practical input size).</p>
+          <div class="use-case">
+            <strong>Used for:</strong> MST (Kruskal), cycle detection, connected components, offline LCA, dynamic connectivity.
+          </div>
+        </div>
+        <div class="code-panel">
+          <div class="code-label">// DSU.cpp</div>
+          <pre><span class="kw">#include</span><span class="st">&lt;bits/stdc++.h&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="kw">struct</span> <span class="ty">DSU</span> {
+    <span class="ty">int</span> n;
+    vector&lt;<span class="ty">int</span>&gt; parent, rank;
+
+    DSU(<span class="ty">int</span> n) : n(n), parent(n), rank(n) {
+        <span class="kw">for</span>(<span class="ty">int</span> i = <span class="nm">0</span>; i &lt; n; i++)
+            parent[i] = i;
+    }
+
+    <span class="ty">int</span> <span class="fn">rootof</span>(<span class="ty">int</span> x) {
+        <span class="kw">if</span>(parent[x] != x)
+            parent[x] = <span class="fn">rootof</span>(parent[x]); <span class="cm">// path compression</span>
+        <span class="kw">return</span> parent[x];
+    }
+
+    <span class="ty">bool</span> <span class="fn">merge</span>(<span class="ty">int</span> x, <span class="ty">int</span> y) {
+        <span class="ty">int</span> a = <span class="fn">rootof</span>(x), b = <span class="fn">rootof</span>(y);
+        <span class="kw">if</span>(a == b) <span class="kw">return false</span>; <span class="cm">// already same set</span>
+        <span class="kw">if</span>(rank[a] &gt; rank[b])      parent[b] = a;
+        <span class="kw">else if</span>(rank[a] &lt; rank[b]) parent[a] = b;
+        <span class="kw">else</span> { rank[a]++; parent[b] = a; }
+        <span class="kw">return true</span>;
+    }
+};</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEGMENT TREE -->
+    <div class="algo-view" id="view-segtree">
+      <div class="algo-header">
+        <h1>Segment Tree (Lazy Propagation)</h1>
+        <div class="algo-meta">
+          <span class="badge tag-ds">Data Structure</span>
+          <span class="complexity">Time: O(log n) per query/update &nbsp;·&nbsp; Space: O(4n)</span>
+        </div>
+      </div>
+      <div class="algo-body">
+        <div class="desc-panel">
+          <h3>// description</h3>
+          <p>A Segment Tree partitions an array into segments stored in a binary tree, enabling range queries and range updates in O(log n).</p>
+          <p>This version uses <span class="highlight">lazy propagation</span>: instead of immediately pushing updates to all children, each node stores a pending <code>lazy</code> value that is pushed down only when a node is visited. This turns range updates from O(n) to O(log n).</p>
+          <p>The implementation here is built on an Euler tour of a tree, using two separate segment trees — one per parity level — to support subtree updates and point queries on trees.</p>
+          <div class="use-case">
+            <strong>Used for:</strong> Range sum/min/max, range add/set, DSU on tree, HLD queries, offline problems.
+          </div>
+        </div>
+        <div class="code-panel">
+          <div class="code-label">// Segment Tree.cpp</div>
+          <pre><span class="kw">struct</span> <span class="ty">SegTree</span> {
+    <span class="ty">int</span> lazy[MX * <span class="nm">4</span>];
+
+    <span class="ty">void</span> <span class="fn">update</span>(<span class="ty">int</span> node, <span class="ty">int</span> b, <span class="ty">int</span> e,
+                <span class="ty">int</span> i, <span class="ty">int</span> j, <span class="ty">int</span> val) {
+        <span class="kw">if</span>(j &lt; b || i &gt; e) <span class="kw">return</span>;
+        <span class="kw">if</span>(i &lt;= b &amp;&amp; e &lt;= j) { lazy[node] += val; }
+        <span class="ty">int</span> lson = node*<span class="nm">2</span>, rson = lson+<span class="nm">1</span>,
+            mid  = (b+e)/<span class="nm">2</span>;
+        <span class="kw">if</span>(lazy[node] &amp;&amp; b != e) { <span class="cm">// push down</span>
+            lazy[lson] += lazy[node];
+            lazy[rson] += lazy[node];
+            lazy[node]  = <span class="nm">0</span>;
+        }
+        <span class="kw">if</span>(i &lt;= b &amp;&amp; e &lt;= j) <span class="kw">return</span>;
+        <span class="fn">update</span>(lson, b, mid, i, j, val);
+        <span class="fn">update</span>(rson, mid+<span class="nm">1</span>, e, i, j, val);
+    }
+
+    <span class="ty">int</span> <span class="fn">query</span>(<span class="ty">int</span> node, <span class="ty">int</span> b, <span class="ty">int</span> e, <span class="ty">int</span> i) {
+        <span class="kw">if</span>(i &lt; b || i &gt; e) <span class="kw">return</span> <span class="nm">0</span>;
+        <span class="ty">int</span> lson = node*<span class="nm">2</span>, rson = lson+<span class="nm">1</span>,
+            mid  = (b+e)/<span class="nm">2</span>;
+        <span class="kw">if</span>(lazy[node] &amp;&amp; b != e) { <span class="cm">// push down</span>
+            lazy[lson] += lazy[node];
+            lazy[rson] += lazy[node];
+            lazy[node]  = <span class="nm">0</span>;
+        }
+        <span class="kw">if</span>(b == e) <span class="kw">return</span> lazy[node];
+        <span class="kw">return</span> <span class="fn">query</span>(lson, b, mid, i)
+             + <span class="fn">query</span>(rson, mid+<span class="nm">1</span>, e, i);
+    }
+};</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- HLD -->
+    <div class="algo-view" id="view-hld">
+      <div class="algo-header">
+        <h1>Heavy-Light Decomposition</h1>
+        <div class="algo-meta">
+          <span class="badge tag-tree">Tree</span>
+          <span class="complexity">Time: O(log²n) per path query &nbsp;·&nbsp; Space: O(n log n)</span>
+        </div>
+      </div>
+      <div class="algo-body">
+        <div class="desc-panel">
+          <h3>// description</h3>
+          <p>HLD decomposes a tree into a set of vertex-disjoint <span class="highlight">chains</span> by always extending a chain through the child with the largest subtree (the "heavy" child). Any root-to-leaf path crosses at most O(log n) chains.</p>
+          <p>Each chain is a contiguous segment in a flattened DFS order, so any path query becomes a series of range queries on a Segment Tree — one per chain boundary crossed.</p>
+          <p>This implementation:</p>
+          <ul>
+            <li>Uses <code>get_sz</code> to compute subtree sizes and parent pointers.</li>
+            <li>Builds chains via <code>hld()</code> assigning new DFS names.</li>
+            <li>Embeds a sparse-table <span class="highlight">LCA</span> for path queries between arbitrary nodes.</li>
+            <li>Uses a max Segment Tree to answer "max edge weight on path u→v".</li>
+          </ul>
+          <div class="use-case">
+            <strong>Used for:</strong> Path sum/max/min on trees, edge/node updates on paths, subtree queries combined with path queries.
+          </div>
+        </div>
+        <div class="code-panel">
+          <div class="code-label">// hld.cpp (core)</div>
+          <pre><span class="ty">void</span> <span class="fn">get_sz</span>(<span class="ty">int</span> u, <span class="ty">int</span> p) {
+    sz[u] = <span class="nm">1</span>;
+    <span class="kw">for</span>(<span class="ty">int</span> v : edge[u]) <span class="kw">if</span>(v != p) {
+        par[v] = u; lev[v] = lev[u]+<span class="nm">1</span>;
+        <span class="fn">get_sz</span>(v, u);
+        sz[u] += sz[v];
+    }
+}
+
+<span class="ty">void</span> <span class="fn">hld</span>(<span class="ty">int</span> u, <span class="ty">int</span> p, <span class="ty">bool</span> isHead) {
+    newName[u] = ++Name;
+    <span class="kw">if</span>(isHead) chain++, chainHead[chain] = u;
+    chainNo[u] = chain;
+    <span class="ty">int</span> bigChild = <span class="nm">0</span>, mxi = -<span class="nm">1</span>;
+    <span class="kw">for</span>(<span class="ty">int</span> v : edge[u])
+        <span class="kw">if</span>(v != p &amp;&amp; sz[v] &gt; mxi)
+            mxi = sz[v], bigChild = v;
+    <span class="kw">if</span>(bigChild) <span class="fn">hld</span>(bigChild, u, <span class="nm">0</span>); <span class="cm">// extend chain</span>
+    <span class="kw">for</span>(<span class="ty">int</span> v : edge[u])
+        <span class="kw">if</span>(v != p &amp;&amp; v != bigChild)
+            <span class="fn">hld</span>(v, u, <span class="nm">1</span>); <span class="cm">// start new chain</span>
+}
+
+<span class="ty">int</span> <span class="fn">query_up</span>(<span class="ty">int</span> u, <span class="ty">int</span> v) {
+    <span class="ty">int</span> ret = <span class="nm">0</span>;
+    <span class="kw">while</span>(<span class="nm">1</span>) {
+        <span class="kw">if</span>(chainNo[u] == chainNo[v]) {
+            ret = max(ret, <span class="fn">query</span>(<span class="nm">1</span>,<span class="nm">1</span>,n,newName[v]+<span class="nm">1</span>,newName[u]));
+            <span class="kw">break</span>;
+        }
+        ret = max(ret, <span class="fn">query</span>(<span class="nm">1</span>,<span class="nm">1</span>,n,
+              newName[chainHead[chainNo[u]]], newName[u]));
+        u = par[chainHead[chainNo[u]]];
+    }
+    <span class="kw">return</span> ret;
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- LCA -->
+    <div class="algo-view" id="view-lca">
+      <div class="algo-header">
+        <h1>Lowest Common Ancestor</h1>
+        <div class="algo-meta">
+          <span class="badge tag-tree">Tree</span>
+          <span class="complexity">Build: O(n log n) &nbsp;·&nbsp; Query: O(log n)</span>
+        </div>
+      </div>
+      <div class="algo-body">
+        <div class="desc-panel">
+          <h3>// description</h3>
+          <p>LCA finds the deepest node that is an ancestor of both u and v. This implementation uses <span class="highlight">binary lifting</span>: for each node, precompute ancestors at distances 1, 2, 4, 8… (powers of two) in a sparse table.</p>
+          <p>To answer a query:</p>
+          <ul>
+            <li>Lift the deeper node until both are at the same depth.</li>
+            <li>Simultaneously lift both until their ancestors diverge.</li>
+            <li>The parent of either is the LCA.</li>
+          </ul>
+          <p>The sparse table is built in O(n log n) with a standard DP: <code>sp[v][j] = sp[sp[v][j-1]][j-1]</code>.</p>
+          <div class="use-case">
+            <strong>Used for:</strong> Tree path queries, HLD preprocessing, distance between nodes, offline RMQ, cycle detection in directed graphs.
+          </div>
+        </div>
+        <div class="code-panel">
+          <div class="code-label">// lowest Common Anccestor.cpp</div>
+          <pre><span class="ty">int</span> sp[MX][<span class="nm">23</span>], L[MX];
+
+<span class="cm">// build sparse table after DFS</span>
+<span class="kw">for</span>(<span class="ty">int</span> j = <span class="nm">1</span>; (<span class="nm">1</span>&lt;&lt;j) &lt;= n; j++)
+    <span class="kw">for</span>(<span class="ty">int</span> i = <span class="nm">1</span>; i &lt;= n; i++)
+        <span class="kw">if</span>(sp[i][j-<span class="nm">1</span>] != -<span class="nm">1</span>)
+            sp[i][j] = sp[sp[i][j-<span class="nm">1</span>]][j-<span class="nm">1</span>];
+
+<span class="ty">int</span> <span class="fn">findlca</span>(<span class="ty">int</span> u, <span class="ty">int</span> v) {
+    <span class="kw">if</span>(L[u] &lt; L[v]) swap(u, v);
+    <span class="ty">int</span> diff = L[u] - L[v];
+    <span class="kw">for</span>(<span class="ty">int</span> i = <span class="nm">22</span>; i &gt;= <span class="nm">0</span>; i--)
+        <span class="kw">if</span>(diff &amp; (<span class="nm">1</span> &lt;&lt; i))
+            u = sp[u][i]; <span class="cm">// lift u to same depth</span>
+    <span class="kw">if</span>(u == v) <span class="kw">return</span> u;
+    <span class="kw">for</span>(<span class="ty">int</span> i = <span class="nm">22</span>; i &gt;= <span class="nm">0</span>; i--)
+        <span class="kw">if</span>(sp[u][i] != sp[v][i])
+            u = sp[u][i], v = sp[v][i];
+    <span class="kw">return</span> sp[u][<span class="nm">0</span>]; <span class="cm">// parent is LCA</span>
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- KMP -->
+    <div class="algo-view" id="view-kmp">
+      <div class="algo-header">
+        <h1>KMP — Knuth-Morris-Pratt</h1>
+        <div class="algo-meta">
+          <span class="badge tag-string">String</span>
+          <span class="complexity">Time: O(n + m) &nbsp;·&nbsp; Space: O(m)</span>
+        </div>
+      </div>
+      <div class="algo-body">
+        <div class="desc-panel">
+          <h3>// description</h3>
+          <p>KMP finds all occurrences of a pattern P in a text T in linear time by avoiding redundant comparisons using the <span class="highlight">failure function</span> (LPS array).</p>
+          <p>The failure function <code>lps[i]</code> stores the length of the longest proper prefix of <code>P[0..i]</code> that is also a suffix. When a mismatch occurs at position <code>i</code>, instead of restarting from scratch, we jump to <code>lps[i-1]</code> — the longest border — and continue matching.</p>
+          <p>This implementation builds the LPS array directly as a 1-indexed char array.</p>
+          <div class="use-case">
+            <strong>Used for:</strong> Pattern matching, counting occurrences, period of a string, string border detection, Aho-Corasick backbone.
+          </div>
+        </div>
+        <div class="code-panel">
+          <div class="code-label">// kmp.cpp</div>
+          <pre><span class="ty">char</span> a[MX];
+<span class="ty">int</span>  lps[MX];
+
+<span class="cm">// build failure function (1-indexed)</span>
+<span class="ty">int</span> cur = <span class="nm">1</span>;
+lps[<span class="nm">0</span>] = -<span class="nm">1</span>;
+lps[<span class="nm">1</span>] =  <span class="nm">0</span>;
+
+<span class="kw">for</span>(<span class="ty">int</span> i = <span class="nm">2</span>; i &lt;= n; i++) {
+    <span class="kw">while</span>(cur != <span class="nm">0</span> &amp;&amp; a[cur] != a[i])
+        cur = lps[cur - <span class="nm">1</span>] + <span class="nm">1</span>; <span class="cm">// fall back</span>
+    lps[i] = cur++;
+}
+
+<span class="cm">// lps[i] = length of longest proper</span>
+<span class="cm">// prefix of a[1..i] that is also suffix</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- Z ALGO -->
+    <div class="algo-view" id="view-zalgo">
+      <div class="algo-header">
+        <h1>Z Algorithm</h1>
+        <div class="algo-meta">
+          <span class="badge tag-string">String</span>
+          <span class="complexity">Time: O(n) &nbsp;·&nbsp; Space: O(n)</span>
+        </div>
+      </div>
+      <div class="algo-body">
+        <div class="desc-panel">
+          <h3>// description</h3>
+          <p>The Z-function of a string S is an array where <code>z[i]</code> is the length of the longest substring starting at <code>S[i]</code> that is also a prefix of S.</p>
+          <p>The algorithm maintains a window <code>[l, r]</code> — the rightmost Z-box seen so far. For each new position <code>i</code>:</p>
+          <ul>
+            <li>If <code>i ≤ r</code>, initialise <code>z[i]</code> from the already-known value <code>z[i-l]</code> (capped at r−i+1).</li>
+            <li>Then extend naively while characters match.</li>
+          </ul>
+          <p>Each character is visited at most twice, giving <span class="highlight">O(n)</span> total.</p>
+          <div class="use-case">
+            <strong>Used for:</strong> Pattern matching (concatenate pattern#text), string periods, palindrome detection, string equality queries.
+          </div>
+        </div>
+        <div class="code-panel">
+          <div class="code-label">// z algo.cpp</div>
+          <pre><span class="cm">// zero-indexed</span>
+vector&lt;<span class="ty">int</span>&gt; <span class="fn">z_function</span>(string s) {
+    <span class="ty">int</span> n = (<span class="ty">int</span>)s.length();
+    vector&lt;<span class="ty">int</span>&gt; z(n);
+    <span class="kw">for</span>(<span class="ty">int</span> i = <span class="nm">1</span>, l = <span class="nm">0</span>, r = <span class="nm">0</span>; i &lt; n; i++) {
+        <span class="kw">if</span>(i &lt;= r)
+            z[i] = min(r - i + <span class="nm">1</span>, z[i - l]);
+        <span class="kw">while</span>(i + z[i] &lt; n &amp;&amp;
+              s[z[i]] == s[i + z[i]])
+            ++z[i];
+        <span class="kw">if</span>(i + z[i] - <span class="nm">1</span> &gt; r)
+            l = i, r = i + z[i] - <span class="nm">1</span>;
+    }
+    <span class="kw">return</span> z;
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- MO'S -->
+    <div class="algo-view" id="view-mos">
+      <div class="algo-header">
+        <h1>Mo's Algorithm</h1>
+        <div class="algo-meta">
+          <span class="badge tag-ds">Offline</span>
+          <span class="complexity">Time: O((n + q)√n) &nbsp;·&nbsp; Space: O(n + q)</span>
+        </div>
+      </div>
+      <div class="algo-body">
+        <div class="desc-panel">
+          <h3>// description</h3>
+          <p>Mo's algorithm answers offline range queries efficiently by sorting them in a specific order that minimises the total movement of two pointers <code>[l, r]</code>.</p>
+          <p>Queries are sorted by <span class="highlight">block of left endpoint</span> (block size √n), then by right endpoint within each block. This ensures:</p>
+          <ul>
+            <li>Total movement of <code>r</code>: O(n√n)</li>
+            <li>Total movement of <code>l</code>: O(q√n)</li>
+          </ul>
+          <p>This implementation solves XOR range queries — maintaining a count array and a running answer that updates in O(1) per pointer move.</p>
+          <div class="use-case">
+            <strong>Used for:</strong> Range frequency, range XOR, range distinct count, any problem where add/remove is O(1) but rebuild is expensive.
+          </div>
+        </div>
+        <div class="code-panel">
+          <div class="code-label">// Mo's Algorithm.cpp</div>
+          <pre><span class="ty">int</span> SQ;
+<span class="kw">struct</span> <span class="ty">Query</span> {
+    <span class="ty">int</span> l, r, idx;
+    <span class="ty">bool</span> <span class="kw">operator</span>&lt;(<span class="kw">const</span> <span class="ty">Query</span> &amp;a) <span class="kw">const</span> {
+        <span class="kw">if</span>(l/SQ == a.l/SQ) <span class="kw">return</span> r &lt; a.r;
+        <span class="kw">return</span> l/SQ &lt; a.l/SQ;
+    }
+} Q[MX];
+
+<span class="ty">int</span>  cnt[<span class="nm">7000005</span>];
+<span class="ty">long long</span> counti = <span class="nm">0</span>;
+
+<span class="kw">inline void</span> <span class="fn">add</span>(<span class="ty">int</span> i) {
+    counti += cnt[ara[i] ^ k];
+    cnt[ara[i]]++;
+}
+<span class="kw">inline void</span> <span class="fn">rem</span>(<span class="ty">int</span> i) {
+    cnt[ara[i]]--;
+    counti -= cnt[ara[i] ^ k];
+}
+
+<span class="cm">// process queries</span>
+SQ = sqrt(n);
+sort(Q, Q+m);
+<span class="ty">int</span> L = <span class="nm">0</span>, R = <span class="nm">0</span>;
+<span class="kw">for</span>(<span class="ty">int</span> i = <span class="nm">0</span>; i &lt; m; i++) {
+    <span class="kw">while</span>(L &lt; Q[i].l) <span class="fn">rem</span>(L++);
+    <span class="kw">while</span>(L &gt; Q[i].l) <span class="fn">add</span>(--L);
+    <span class="kw">while</span>(R &lt; Q[i].r) <span class="fn">add</span>(++R);
+    <span class="kw">while</span>(R &gt; Q[i].r) <span class="fn">rem</span>(R--);
+    ans[Q[i].idx] = counti;
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- FFT -->
+    <div class="algo-view" id="view-fft">
+      <div class="algo-header">
+        <h1>Fast Fourier Transform</h1>
+        <div class="algo-meta">
+          <span class="badge tag-math">Math</span>
+          <span class="complexity">Time: O(n log n) &nbsp;·&nbsp; Space: O(n)</span>
+        </div>
+      </div>
+      <div class="algo-body">
+        <div class="desc-panel">
+          <h3>// description</h3>
+          <p>FFT evaluates a polynomial at n roots of unity in O(n log n) using the <span class="highlight">Cooley-Tukey</span> divide-and-conquer algorithm. Polynomial multiplication then becomes: FFT both, pointwise multiply, inverse FFT.</p>
+          <p>The key idea: a degree-n polynomial can be split into its even- and odd-indexed coefficients, each of degree n/2. Evaluating both halves recursively and combining takes O(n) per level over O(log n) levels.</p>
+          <p>The <code>invert</code> flag triggers the inverse FFT (conjugate twiddle factors + divide by n) to convert back from value representation to coefficient representation.</p>
+          <div class="use-case">
+            <strong>Used for:</strong> Polynomial multiplication, large integer multiplication, convolution, string matching over alphabets, counting problems reducible to convolution.
+          </div>
+        </div>
+        <div class="code-panel">
+          <div class="code-label">// FFT(without modulo).cpp</div>
+          <pre><span class="kw">typedef</span> complex&lt;<span class="ty">long double</span>&gt; base;
+
+<span class="ty">void</span> <span class="fn">fft</span>(vector&lt;base&gt; &amp;a, <span class="ty">bool</span> invert) {
+    <span class="ty">int</span> n = a.size();
+    <span class="cm">// bit-reversal permutation</span>
+    <span class="kw">for</span>(<span class="ty">int</span> i=<span class="nm">1</span>,j=<span class="nm">0</span>; i&lt;n; i++) {
+        <span class="ty">int</span> bit = n&gt;&gt;<span class="nm">1</span>;
+        <span class="kw">for</span>(; j&gt;=bit; bit&gt;&gt;=<span class="nm">1</span>) j-=bit;
+        j += bit;
+        <span class="kw">if</span>(i &lt; j) swap(a[i], a[j]);
+    }
+    <span class="kw">for</span>(<span class="ty">int</span> len=<span class="nm">2</span>; len&lt;=n; len&lt;&lt;=<span class="nm">1</span>) {
+        <span class="ty">long double</span> ang = <span class="nm">2</span>*pi/len*(invert?-<span class="nm">1</span>:<span class="nm">1</span>);
+        base wlen(cos(ang), sin(ang));
+        <span class="kw">for</span>(<span class="ty">int</span> i=<span class="nm">0</span>; i&lt;n; i+=len) {
+            base w(<span class="nm">1</span>);
+            <span class="kw">for</span>(<span class="ty">int</span> j=<span class="nm">0</span>; j&lt;len/<span class="nm">2</span>; j++) {
+                base u = a[i+j];
+                base v = a[i+j+len/<span class="nm">2</span>] * w;
+                a[i+j]        = u + v;
+                a[i+j+len/<span class="nm">2</span>] = u - v;
+                w *= wlen;
+            }
+        }
+    }
+    <span class="kw">if</span>(invert)
+        <span class="kw">for</span>(<span class="ty">int</span> i=<span class="nm">0</span>; i&lt;n; i++) a[i] /= n;
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONVEX HULL -->
+    <div class="algo-view" id="view-convex">
+      <div class="algo-header">
+        <h1>Convex Hull</h1>
+        <div class="algo-meta">
+          <span class="badge tag-geo">Geometry</span>
+          <span class="complexity">Time: O(n log n) &nbsp;·&nbsp; Space: O(n)</span>
+        </div>
+      </div>
+      <div class="algo-body">
+        <div class="desc-panel">
+          <h3>// description</h3>
+          <p>Finds the smallest convex polygon containing all given points. This is Andrew's <span class="highlight">monotone chain</span> algorithm.</p>
+          <p>After sorting points lexicographically (by x, then y), the algorithm builds the lower and upper hulls separately by scanning left-to-right and right-to-left, maintaining the invariant that the hull always makes left turns.</p>
+          <p>The <code>cross</code> function computes the 2D cross product of vectors OA and OB:</p>
+          <ul>
+            <li>> 0: left turn (keep)</li>
+            <li>= 0: collinear (remove for strict hull)</li>
+            <li>&lt; 0: right turn (pop and retry)</li>
+          </ul>
+          <div class="use-case">
+            <strong>Used for:</strong> Farthest pair of points, rotating calipers, minimum enclosing rectangle, half-plane intersection, CHT (Convex Hull Trick) for DP optimisation.
+          </div>
+        </div>
+        <div class="code-panel">
+          <div class="code-label">// Convex Hull.cpp</div>
+          <pre><span class="kw">struct</span> <span class="ty">PT</span> {
+    <span class="ty">ll</span> x, y;
+    <span class="ty">bool</span> <span class="kw">operator</span>&lt;(<span class="ty">PT</span> p) <span class="kw">const</span> {
+        <span class="kw">return</span> x &lt; p.x || (x==p.x &amp;&amp; y&lt;p.y);
+    }
+};
+
+<span class="ty">ll</span> <span class="fn">cross</span>(<span class="ty">PT</span> O, <span class="ty">PT</span> A, <span class="ty">PT</span> B) {
+    <span class="kw">return</span> (A.x-O.x)*(B.y-O.y)
+         - (A.y-O.y)*(B.x-O.x);
+}
+
+vector&lt;<span class="ty">PT</span>&gt; <span class="fn">convex_hull</span>(vector&lt;<span class="ty">PT</span>&gt; P) {
+    <span class="ty">int</span> n = P.size(), k = <span class="nm">0</span>;
+    vector&lt;<span class="ty">PT</span>&gt; H(<span class="nm">2</span>*n);
+    sort(P.begin(), P.end());
+
+    <span class="cm">// lower hull</span>
+    <span class="kw">for</span>(<span class="ty">int</span> i = <span class="nm">0</span>; i &lt; n; i++) {
+        <span class="kw">while</span>(k &gt;= <span class="nm">2</span> &amp;&amp;
+              <span class="fn">cross</span>(H[k-<span class="nm">2</span>],H[k-<span class="nm">1</span>],P[i]) &lt;= <span class="nm">0</span>)
+            k--;
+        H[k++] = P[i];
+    }
+    <span class="cm">// upper hull</span>
+    <span class="kw">for</span>(<span class="ty">int</span> i = n-<span class="nm">2</span>, t = k+<span class="nm">1</span>; i &gt;= <span class="nm">0</span>; i--) {
+        <span class="kw">while</span>(k &gt;= t &amp;&amp;
+              <span class="fn">cross</span>(H[k-<span class="nm">2</span>],H[k-<span class="nm">1</span>],P[i]) &lt;= <span class="nm">0</span>)
+            k--;
+        H[k++] = P[i];
+    }
+    H.resize(k-<span class="nm">1</span>);
+    <span class="kw">return</span> H;
+}</pre>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  function show(id) {
+    document.querySelectorAll('.algo-view').forEach(v => v.classList.remove('visible'));
+    document.querySelectorAll('.algo-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('empty').style.display = 'none';
+    document.getElementById('view-' + id).classList.add('visible');
+    event.currentTarget.classList.add('active');
+  }
+</script>
+
+</body>
+</html>
